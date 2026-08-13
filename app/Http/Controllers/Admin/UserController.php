@@ -3,59 +3,139 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\User\UserService;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function __construct(
-        protected UserService $userService
-    ) {
+    protected UserService $userService;
+
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
     }
 
 
-    /**
-     * Menampilkan halaman pengguna.
-     */
-    public function index(): View
+    /*
+    |--------------------------------------------------------------------------
+    | INDEX
+    |--------------------------------------------------------------------------
+    */
+
+    public function index()
     {
         $users = $this->userService->getUsers();
 
-        return view('pages.admin.user_page', [
-            'users' => $users,
-        ]);
+        return view('pages.admin.user_page', compact('users'));
     }
 
 
-    /**
-     * Menyimpan pengguna baru.
-     */
-    public function store(Request $request): RedirectResponse
+    /*
+    |--------------------------------------------------------------------------
+    | STORE
+    |--------------------------------------------------------------------------
+    */
+
+    public function store(Request $request)
     {
         $this->userService->createUser($request);
 
         return redirect()
             ->route('admin.users.index')
-            ->with('success', 'Pengguna berhasil ditambahkan.');
+            ->with(
+                'success',
+                'Pengguna berhasil ditambahkan.'
+            );
     }
 
-    public function updateRole(Request $request, int $id)
-    {
-        $user = $this->userService->updateRole(
-            $id,
-            $request->input('role')
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
+
+    public function update(
+        Request $request,
+        User $user
+    ) {
+        $this->userService->updateUser(
+            $request,
+            $user
         );
-    
-    
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with(
+                'success',
+                'Pengguna berhasil diperbarui.'
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE ROLE
+    |--------------------------------------------------------------------------
+    */
+
+    public function updateRole(
+        Request $request,
+        User $user
+    ) {
+        $updatedUser =
+            $this->userService->updateRole(
+                $request,
+                $user
+            );
+
         return response()->json([
             'success' => true,
             'message' => 'Role pengguna berhasil diperbarui.',
             'data' => [
-                'id' => $user->id,
-                'role' => $user->role,
+                'id' => $updatedUser->id,
+                'role' => $updatedUser->role,
             ],
         ]);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE
+    |--------------------------------------------------------------------------
+    */
+
+    public function destroy(User $user)
+    {
+        $this->userService->deleteUser($user);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with(
+                'success',
+                'Pengguna berhasil dihapus.'
+            );
+    }
+
+    /**
+    * Menghapus beberapa pengguna sekaligus.
+    */
+    public function bulkDestroy(Request $request)
+    {
+        $deletedCount =
+            $this->userService->deleteUsers(
+                $request
+            );
+
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with(
+                'success',
+                $deletedCount . ' pengguna berhasil dihapus.'
+            );
     }
 }

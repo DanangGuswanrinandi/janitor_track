@@ -2,8 +2,16 @@
      ADMIN NAVBAR
 ========================================================== --}}
 
-<header class="sticky-top d-flex align-items-center justify-content-between border-bottom bg-white"
-    style="z-index: 1000; height: 74px; padding: 0 28px; border-color: #edf0f5 !important;">
+<header
+    class="d-flex align-items-center justify-content-between border-bottom bg-white"
+    style="
+        position: relative;
+        z-index: 1000;
+        height: 74px;
+        padding: 0 28px;
+        border-color: #edf0f5 !important;
+    "
+>
 
     {{-- =====================================================
          LEFT
@@ -133,6 +141,8 @@
 </header>
 
 <style>
+
+
     /* =========================================================
        USER BUTTON
     ========================================================== */

@@ -297,7 +297,7 @@
                 gap-2
                 w-100
                 text-decoration-none
-                {{ request()->routeIs('users.*') ? 'active' : '' }}
+                {{ request()->routeIs('admin.users.*') ? 'active' : '' }}
             "
             style="
                 min-height: 46px;

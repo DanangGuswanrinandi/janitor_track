@@ -142,6 +142,25 @@
 
             @include('components.admin.user_page.add_user_modal')
 
+            {{-- =====================================================
+                 UPDATE USER MODAL
+            ====================================================== --}}
+
+            @include(
+                'components.admin.user_page.update_user_modal'
+            )
+
+
+            {{-- =====================================================
+                 DELETE USER MODAL
+            ====================================================== --}}
+
+            @include(
+                'components.admin.user_page.delete_user_modal'
+            )
+
+            @include('components.admin.user_page.delete_selected_users_modal')
+
         </div>
 
     </div>

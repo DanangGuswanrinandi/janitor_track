@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
-
+use Illuminate\Support\Facades\Route;
 
 
 /*
@@ -42,6 +41,12 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/dashboard', function () {
         return view('pages.admin.dashboard');
     })->name('dashboard');
@@ -49,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | User Management
+    | Users
     |--------------------------------------------------------------------------
     */
 
@@ -58,8 +63,19 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/users', [UserController::class, 'store'])
         ->name('admin.users.store');
-        
-    Route::patch('/users/{id}/role', [UserController::class, 'updateRole'])
+
+    Route::put('/users/{user}', [UserController::class, 'update'])
+        ->name('admin.users.update');
+
+    Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])
         ->name('admin.users.role.update');
+
+    Route::delete('/users/bulk-destroy', [UserController::class, 'bulkDestroy']
+        )->name('admin.users.bulk-destroy');
+
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])
+        ->name('admin.users.destroy');
+
+   
 
 });
