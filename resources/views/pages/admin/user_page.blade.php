@@ -50,15 +50,36 @@
                     font-size: 13px;
                 "
             >
-            
+
                 <i class="bi bi-check-circle-fill"></i>
-            
+
                 <span>
                     {{ session('success') }}
                 </span>
             
             </div>
         
+        @endif
+        
+        
+        {{-- =====================================================
+             CLEAR SELECTED USERS AFTER SUCCESS
+        ====================================================== --}}
+        
+        @if (session('success'))
+        
+            @push('scripts')
+        
+                <script>
+                
+                    sessionStorage.removeItem(
+                        'cleantrack_selected_user_ids'
+                    );
+                
+                </script>
+
+            @endpush
+            
         @endif
 
 
@@ -164,5 +185,63 @@
         </div>
 
     </div>
+
+    {{-- =====================================================
+         USER SELECTION PAGE STATE
+    ====================================================== --}}
+    
+    @push('scripts')
+    
+        <script>
+        
+            document.addEventListener(
+                'DOMContentLoaded',
+                function () {
+                
+                    const storageKey =
+                        'cleantrack_selected_user_ids';
+                
+                
+                    const previousPage =
+                        sessionStorage.getItem(
+                            'cleantrack_previous_page'
+                        );
+                
+                
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Jika sebelumnya berasal dari halaman selain users
+                    |--------------------------------------------------------------------------
+                    */
+                
+                    if (
+                        previousPage &&
+                        previousPage !== 'users'
+                    ) {
+                    
+                        sessionStorage.removeItem(
+                            storageKey
+                        );
+                    
+                    }
+                
+                
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Tandai halaman saat ini
+                    |--------------------------------------------------------------------------
+                    */
+                
+                    sessionStorage.setItem(
+                        'cleantrack_previous_page',
+                        'users'
+                    );
+                
+                }
+            );
+            
+        </script>
+    
+    @endpush
 
 @endsection

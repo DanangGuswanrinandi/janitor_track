@@ -228,15 +228,18 @@
                     'deleteSelectedUsersButton'
                 );
 
+
             const form =
                 document.getElementById(
                     'deleteSelectedUsersForm'
                 );
 
+
             const inputsContainer =
                 document.getElementById(
                     'selectedUsersInputs'
                 );
+
 
             const selectedCount =
                 document.getElementById(
@@ -256,7 +259,90 @@
 
             /*
             |--------------------------------------------------------------------------
-            | PREPARE SELECTED USER IDS
+            | STORAGE KEY
+            |--------------------------------------------------------------------------
+            */
+
+            const storageKey =
+                'cleantrack_selected_user_ids';
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE MODAL DATA
+            |--------------------------------------------------------------------------
+            */
+
+            function prepareSelectedUsers() {
+
+                const selectedUserIds =
+                    JSON.parse(
+                        sessionStorage.getItem(
+                            storageKey
+                        ) || '[]'
+                    );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Bersihkan hidden input lama
+                |--------------------------------------------------------------------------
+                */
+
+                inputsContainer.innerHTML =
+                    '';
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Update jumlah user
+                |--------------------------------------------------------------------------
+                */
+
+                selectedCount.textContent =
+                    selectedUserIds.length;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Buat hidden input
+                |--------------------------------------------------------------------------
+                */
+
+                selectedUserIds.forEach(
+                    function (userId) {
+
+                        const input =
+                            document.createElement(
+                                'input'
+                            );
+
+
+                        input.type =
+                            'hidden';
+
+
+                        input.name =
+                            'user_ids[]';
+
+
+                        input.value =
+                            userId;
+
+
+                        inputsContainer.appendChild(
+                            input
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SAAT MODAL DIBUKA
             |--------------------------------------------------------------------------
             */
 
@@ -264,45 +350,23 @@
                 'click',
                 function () {
 
-                    const selectedUsers =
-                        document.querySelectorAll(
-                            '.user-checkbox:checked'
-                        );
+                    prepareSelectedUsers();
+
+                }
+            );
 
 
-                    inputsContainer.innerHTML =
-                        '';
+            /*
+            |--------------------------------------------------------------------------
+            | SEBELUM FORM DIKIRIM
+            |--------------------------------------------------------------------------
+            */
 
+            form.addEventListener(
+                'submit',
+                function () {
 
-                    selectedCount.textContent =
-                        selectedUsers.length;
-
-
-                    selectedUsers.forEach(
-                        function (checkbox) {
-
-                            const input =
-                                document.createElement(
-                                    'input'
-                                );
-
-
-                            input.type =
-                                'hidden';
-
-                            input.name =
-                                'user_ids[]';
-
-                            input.value =
-                                checkbox.value;
-
-
-                            inputsContainer.appendChild(
-                                input
-                            );
-
-                        }
-                    );
+                    prepareSelectedUsers();
 
                 }
             );

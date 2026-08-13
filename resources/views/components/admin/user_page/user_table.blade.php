@@ -152,7 +152,7 @@
                             font-size: 13px;
                         "
                     >
-                        {{ $index + 1 }}
+                        {{ $users->firstItem() + $index }}
                     </td>
 
 
@@ -369,6 +369,209 @@
     </table>
 
     {{-- =========================================================
+         PAGINATION
+    ========================================================== --}}
+    
+    @if ($users->hasPages())
+    
+        <div
+            class="d-flex align-items-center justify-content-between gap-3 mt-3"
+            style="
+                flex-wrap: wrap;
+            "
+        >
+    
+            {{-- =================================================
+                 PAGINATION INFO
+            ================================================== --}}
+    
+            <div
+                class="flex-shrink-0"
+                style="
+                    color: #98a1b2;
+                    font-size: 12px;
+                    white-space: nowrap;
+                "
+            >
+    
+                Menampilkan
+    
+                <span
+                    class="fw-semibold"
+                    style="
+                        color: #5f6875;
+                    "
+                >
+                    {{ $users->firstItem() }}
+                </span>
+            
+                -
+            
+                <span
+                    class="fw-semibold"
+                    style="
+                        color: #5f6875;
+                    "
+                >
+                    {{ $users->lastItem() }}
+                </span>
+            
+                dari
+            
+                <span
+                    class="fw-semibold"
+                    style="
+                        color: #5f6875;
+                    "
+                >
+                    {{ $users->total() }}
+                </span>
+            
+                pengguna
+            
+            </div>
+        
+        
+            {{-- =================================================
+                 PAGINATION BUTTON
+            ================================================== --}}
+        
+            <nav
+                aria-label="Navigasi halaman pengguna"
+                class="flex-shrink-0"
+            >
+        
+                <ul
+                    class="pagination mb-0"
+                >
+        
+                    {{-- =================================================
+                         PREVIOUS
+                    ================================================== --}}
+        
+                    <li
+                        class="page-item {{ $users->onFirstPage() ? 'disabled' : '' }}"
+                    >
+        
+                        @if ($users->onFirstPage())
+        
+                            <span
+                                class="page-link d-flex align-items-center justify-content-center"
+                                aria-hidden="true"
+                                style="
+                                    width: 42px;
+                                    height: 42px;
+                                    color: #98a1b2;
+                                    background: #f1f3f6;
+                                "
+                            >
+                                &lsaquo;
+                            </span>
+                        
+                        @else
+                        
+                            <a
+                                class="page-link d-flex align-items-center justify-content-center"
+                                href="{{ $users->previousPageUrl() }}"
+                                aria-label="Halaman sebelumnya"
+                                style="
+                                    width: 42px;
+                                    height: 42px;
+                                    color: #3478f6;
+                                "
+                            >
+                                &lsaquo;
+                            </a>
+                        
+                        @endif
+                        
+                    </li>
+                
+                
+                    {{-- =================================================
+                         PAGE NUMBER
+                    ================================================== --}}
+                
+                    @foreach ($users->getUrlRange(
+                        max(1, $users->currentPage() - 1),
+                        min($users->lastPage(), $users->currentPage() + 1)
+                    ) as $page => $url)
+    
+                        <li
+                            class="page-item {{ $page == $users->currentPage() ? 'active' : '' }}"
+                        >
+                
+                            <a
+                                class="page-link d-flex align-items-center justify-content-center"
+                                href="{{ $url }}"
+                                style="
+                                    width: 42px;
+                                    height: 42px;
+                                    {{ $page == $users->currentPage()
+                                        ? 'background: #3478f6; border-color: #3478f6; color: #ffffff;'
+                                        : 'color: #3478f6;' }}
+                                "
+                            >
+                                {{ $page }}
+                            </a>
+                        
+                        </li>
+                    
+                    @endforeach
+                    
+                    
+                    {{-- =================================================
+                         NEXT
+                    ================================================== --}}
+                    
+                    <li
+                        class="page-item {{ $users->hasMorePages() ? '' : 'disabled' }}"
+                    >
+                    
+                        @if ($users->hasMorePages())
+                    
+                            <a
+                                class="page-link d-flex align-items-center justify-content-center"
+                                href="{{ $users->nextPageUrl() }}"
+                                aria-label="Halaman berikutnya"
+                                style="
+                                    width: 42px;
+                                    height: 42px;
+                                    color: #3478f6;
+                                "
+                            >
+                                &rsaquo;
+                            </a>
+                        
+                        @else
+                        
+                            <span
+                                class="page-link d-flex align-items-center justify-content-center"
+                                aria-hidden="true"
+                                style="
+                                    width: 42px;
+                                    height: 42px;
+                                    color: #98a1b2;
+                                "
+                            >
+                                &rsaquo;
+                            </span>
+                        
+                        @endif
+                        
+                    </li>
+                
+                </ul>
+            
+            </nav>
+        
+        </div>
+    
+    @endif
+
+    
+
+    {{-- =========================================================
          BULK DELETE
     ========================================================== --}}
     
@@ -418,15 +621,23 @@
         'DOMContentLoaded',
         function () {
 
+            /*
+            |--------------------------------------------------------------------------
+            | ELEMENT
+            |--------------------------------------------------------------------------
+            */
+
             const selectAll =
                 document.getElementById(
                     'selectAllUsers'
                 );
 
+
             const userCheckboxes =
                 document.querySelectorAll(
                     '.user-checkbox'
                 );
+
 
             const deleteButton =
                 document.getElementById(
@@ -434,11 +645,49 @@
                 );
 
 
-            if (
-                !selectAll ||
-                !deleteButton
-            ) {
-                return;
+            /*
+            |--------------------------------------------------------------------------
+            | STORAGE KEY
+            |--------------------------------------------------------------------------
+            */
+
+            const storageKey =
+                'cleantrack_selected_user_ids';
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | AMBIL SELECTION YANG TERSIMPAN
+            |--------------------------------------------------------------------------
+            */
+
+            let selectedUserIds =
+                new Set(
+                    JSON.parse(
+                        sessionStorage.getItem(
+                            storageKey
+                        ) || '[]'
+                    ).map(
+                        String
+                    )
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SIMPAN SELECTION
+            |--------------------------------------------------------------------------
+            */
+
+            function saveSelectedUsers() {
+
+                sessionStorage.setItem(
+                    storageKey,
+                    JSON.stringify(
+                        [...selectedUserIds]
+                    )
+                );
+
             }
 
 
@@ -450,14 +699,13 @@
 
             function updateDeleteButton() {
 
-                const checkedUsers =
-                    document.querySelectorAll(
-                        '.user-checkbox:checked'
-                    );
+                if (!deleteButton) {
+                    return;
+                }
 
 
                 const hasSelectedUsers =
-                    checkedUsers.length > 0;
+                    selectedUserIds.size > 0;
 
 
                 deleteButton.disabled =
@@ -482,26 +730,53 @@
 
                 }
 
+            }
 
-                /*
-                |--------------------------------------------------------------------------
-                | SELECT ALL STATE
-                |--------------------------------------------------------------------------
-                */
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE SELECT ALL
+            |--------------------------------------------------------------------------
+            |
+            | Select All hanya berlaku untuk data
+            | yang sedang tampil di halaman aktif.
+            |
+            */
+
+            function updateSelectAll() {
+
+                if (!selectAll) {
+                    return;
+                }
+
 
                 const totalUsers =
                     userCheckboxes.length;
 
 
-                const selectedUsers =
-                    checkedUsers.length;
+                const selectedUsersOnPage =
+                    Array.from(
+                        userCheckboxes
+                    ).filter(
+                        function (checkbox) {
+
+                            return selectedUserIds.has(
+                                String(
+                                    checkbox.value
+                                )
+                            );
+
+                        }
+                    ).length;
 
 
                 if (totalUsers === 0) {
 
-                    selectAll.checked = false;
+                    selectAll.checked =
+                        false;
 
-                    selectAll.indeterminate = false;
+                    selectAll.indeterminate =
+                        false;
 
                     return;
 
@@ -509,28 +784,73 @@
 
 
                 if (
-                    selectedUsers === totalUsers
+                    selectedUsersOnPage ===
+                    totalUsers
                 ) {
 
-                    selectAll.checked = true;
+                    selectAll.checked =
+                        true;
 
-                    selectAll.indeterminate = false;
+                    selectAll.indeterminate =
+                        false;
 
                 } else if (
-                    selectedUsers > 0
+                    selectedUsersOnPage > 0
                 ) {
 
-                    selectAll.checked = false;
+                    selectAll.checked =
+                        false;
 
-                    selectAll.indeterminate = true;
+                    selectAll.indeterminate =
+                        true;
 
                 } else {
 
-                    selectAll.checked = false;
+                    selectAll.checked =
+                        false;
 
-                    selectAll.indeterminate = false;
+                    selectAll.indeterminate =
+                        false;
 
                 }
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | RESTORE CHECKBOX
+            |--------------------------------------------------------------------------
+            |
+            | Saat pagination dibuka kembali,
+            | checkbox yang sebelumnya dipilih akan
+            | otomatis dicentang.
+            |
+            */
+
+            function restoreSelectedUsers() {
+
+                userCheckboxes.forEach(
+                    function (checkbox) {
+
+                        const userId =
+                            String(
+                                checkbox.value
+                            );
+
+
+                        checkbox.checked =
+                            selectedUserIds.has(
+                                userId
+                            );
+
+                    }
+                );
+
+
+                updateSelectAll();
+
+                updateDeleteButton();
 
             }
 
@@ -541,29 +861,60 @@
             |--------------------------------------------------------------------------
             */
 
-            selectAll.addEventListener(
-                'change',
-                function () {
+            if (selectAll) {
 
-                    userCheckboxes.forEach(
-                        function (checkbox) {
+                selectAll.addEventListener(
+                    'change',
+                    function () {
 
-                            checkbox.checked =
-                                selectAll.checked;
+                        userCheckboxes.forEach(
+                            function (checkbox) {
 
-                        }
-                    );
+                                const userId =
+                                    String(
+                                        checkbox.value
+                                    );
 
 
-                    updateDeleteButton();
+                                if (
+                                    selectAll.checked
+                                ) {
 
-                }
-            );
+                                    selectedUserIds.add(
+                                        userId
+                                    );
+
+                                } else {
+
+                                    selectedUserIds.delete(
+                                        userId
+                                    );
+
+                                }
+
+
+                                checkbox.checked =
+                                    selectAll.checked;
+
+                            }
+                        );
+
+
+                        saveSelectedUsers();
+
+                        updateSelectAll();
+
+                        updateDeleteButton();
+
+                    }
+                );
+
+            }
 
 
             /*
             |--------------------------------------------------------------------------
-            | INDIVIDUAL CHECKBOX
+            | CHECKBOX INDIVIDUAL
             |--------------------------------------------------------------------------
             */
 
@@ -573,6 +924,33 @@
                     checkbox.addEventListener(
                         'change',
                         function () {
+
+                            const userId =
+                                String(
+                                    checkbox.value
+                                );
+
+
+                            if (
+                                checkbox.checked
+                            ) {
+
+                                selectedUserIds.add(
+                                    userId
+                                );
+
+                            } else {
+
+                                selectedUserIds.delete(
+                                    userId
+                                );
+
+                            }
+
+
+                            saveSelectedUsers();
+
+                            updateSelectAll();
 
                             updateDeleteButton();
 
@@ -585,11 +963,11 @@
 
             /*
             |--------------------------------------------------------------------------
-            | INITIAL STATE
+            | INITIALIZE
             |--------------------------------------------------------------------------
             */
 
-            updateDeleteButton();
+            restoreSelectedUsers();
 
         }
     );

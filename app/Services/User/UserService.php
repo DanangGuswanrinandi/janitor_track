@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 class UserService
 {
     /**
-     * Mengambil seluruh pengguna.
+     * Mengambil pengguna dengan pagination.
      */
     public function getUsers()
     {
@@ -23,7 +23,7 @@ class UserService
                 'updated_at',
             ])
             ->orderBy('id')
-            ->get();
+            ->paginate(20);
     }
 
 

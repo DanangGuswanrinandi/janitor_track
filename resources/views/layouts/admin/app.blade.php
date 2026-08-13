@@ -336,6 +336,85 @@
 
     </script>
 
+    {{-- =========================================================
+         CLEAR USER SELECTION WHEN LEAVING USER PAGE
+    ========================================================== --}}
+    
+    <script>
+    
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
+            
+                const userPagePath =
+                    "{{ parse_url(route('admin.users.index'), PHP_URL_PATH) }}";
+            
+                const currentPath =
+                    window.location.pathname;
+            
+            
+                /*
+                |--------------------------------------------------------------------------
+                | Semua link navigasi sidebar
+                |--------------------------------------------------------------------------
+                */
+            
+                const sidebar =
+                    document.getElementById('adminSidebar');
+            
+            
+                if (!sidebar) {
+                    return;
+                }
+            
+            
+                const sidebarLinks =
+                    sidebar.querySelectorAll('a[href]');
+            
+            
+                sidebarLinks.forEach(
+                    function (link) {
+                    
+                        link.addEventListener(
+                            'click',
+                            function () {
+                            
+                                const targetUrl =
+                                    new URL(
+                                        link.href,
+                                        window.location.origin
+                                    );
+                            
+                            
+                                /*
+                                |--------------------------------------------------------------------------
+                                | Jika sedang berada di halaman Users
+                                | dan pindah ke halaman lain
+                                |--------------------------------------------------------------------------
+                                */
+                            
+                                if (
+                                    currentPath === userPagePath &&
+                                    targetUrl.pathname !== userPagePath
+                                ) {
+                                
+                                    sessionStorage.removeItem(
+                                        'cleantrack_selected_user_ids'
+                                    );
+                                
+                                }
+                            
+                            }
+                        );
+                        
+                    }
+                );
+                
+            }
+        );
+        
+    </script>
+
 
     @stack('scripts')
 
