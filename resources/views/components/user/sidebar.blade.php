@@ -106,271 +106,108 @@
             box-sizing: border-box;
         "
     >
-
-        {{-- =================================================
-             DASHBOARD
-        ================================================== --}}
-
-        <a
-            href="{{ route('user.dashboard') }}"
-            class="
-                user-menu-item
-                d-flex
-                align-items-center
-                gap-2
-                w-100
-                text-decoration-none
-                {{ request()->routeIs('user.dashboard') ? 'active' : '' }}
-            "
-            style="
-                min-height: 46px;
-                margin-bottom: 7px;
-                padding: 0 14px;
-                box-sizing: border-box;
-                border-radius: 10px;
-                color: #ffffff;
-                font-size: 14px;
-                font-weight: 500;
-                transition:
-                    background 0.2s ease,
-                    color 0.2s ease;
-            "
-        >
-
-            <i
-                class="bi bi-grid-1x2-fill flex-shrink-0"
-                style="
-                    width: 20px;
-                    font-size: 16px;
+    
+        @php
+    
+            $userMenus = [
+    
+                [
+                    'label' => 'Dashboard',
+                    'icon' => 'bi-grid-1x2-fill',
+                    'route' => 'user.dashboard',
+                    'active' => 'user.dashboard',
+                ],
+    
+                [
+                    'label' => 'Laporan',
+                    'icon' => 'bi-clipboard2-data',
+                    'route' => '#',
+                    'active' => null,
+                ],
+    
+                [
+                    'label' => 'Janitor',
+                    'icon' => 'bi-person-badge',
+                    'route' => '#',
+                    'active' => null,
+                ],
+    
+                [
+                    'label' => 'Jadwal',
+                    'icon' => 'bi-calendar3',
+                    'route' => '#',
+                    'active' => null,
+                ],
+    
+                [
+                    'label' => 'Pengaturan',
+                    'icon' => 'bi-gear',
+                    'route' => '#',
+                    'active' => null,
+                ],
+    
+            ];
+    
+        @endphp
+    
+    
+        @foreach ($userMenus as $menu)
+    
+            @php
+    
+                $isActive =
+                    $menu['active']
+                        ? request()->routeIs($menu['active'])
+                        : false;
+    
+            @endphp
+    
+    
+            <a
+                href="{{ $menu['route'] === '#'
+                    ? '#'
+                    : route($menu['route']) }}"
+                class="
+                    user-menu-item
+                    d-flex
+                    align-items-center
+                    gap-2
+                    w-100
+                    text-decoration-none
+                    {{ $isActive ? 'active' : '' }}
                 "
-            ></i>
-
-            <span>
-                Dashboard
-            </span>
-
-        </a>
-
-
-        {{-- =================================================
-             LAPORAN
-        ================================================== --}}
-
-        <a
-            href="#"
-            class="
-                user-menu-item
-                d-flex
-                align-items-center
-                gap-2
-                w-100
-                text-decoration-none
-            "
-            style="
-                min-height: 46px;
-                margin-bottom: 7px;
-                padding: 0 14px;
-                box-sizing: border-box;
-                border-radius: 10px;
-                color: #ffffff;
-                font-size: 14px;
-                font-weight: 500;
-                transition:
-                    background 0.2s ease,
-                    color 0.2s ease;
-            "
-        >
-
-            <i
-                class="bi bi-clipboard2-data flex-shrink-0"
                 style="
-                    width: 20px;
-                    font-size: 16px;
+                    min-height: 46px;
+                    margin-bottom: 7px;
+                    padding: 0 14px;
+                    box-sizing: border-box;
+                    border-radius: 10px;
+                    color: #ffffff;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition:
+                        background 0.2s ease,
+                        color 0.2s ease;
                 "
-            ></i>
-
-            <span>
-                Laporan
-            </span>
-
-        </a>
-
-
-        {{-- =================================================
-             JANITOR
-        ================================================== --}}
-
-        <a
-            href="#"
-            class="
-                user-menu-item
-                d-flex
-                align-items-center
-                gap-2
-                w-100
-                text-decoration-none
-            "
-            style="
-                min-height: 46px;
-                margin-bottom: 7px;
-                padding: 0 14px;
-                box-sizing: border-box;
-                border-radius: 10px;
-                color: #ffffff;
-                font-size: 14px;
-                font-weight: 500;
-                transition:
-                    background 0.2s ease,
-                    color 0.2s ease;
-            "
-        >
-
-            <i
-                class="bi bi-person-badge flex-shrink-0"
-                style="
-                    width: 20px;
-                    font-size: 16px;
-                "
-            ></i>
-
-            <span>
-                Janitor
-            </span>
-
-        </a>
-
-
-        {{-- =================================================
-             JADWAL
-        ================================================== --}}
-
-        <a
-            href="#"
-            class="
-                user-menu-item
-                d-flex
-                align-items-center
-                gap-2
-                w-100
-                text-decoration-none
-            "
-            style="
-                min-height: 46px;
-                margin-bottom: 7px;
-                padding: 0 14px;
-                box-sizing: border-box;
-                border-radius: 10px;
-                color: #ffffff;
-                font-size: 14px;
-                font-weight: 500;
-                transition:
-                    background 0.2s ease,
-                    color 0.2s ease;
-            "
-        >
-
-            <i
-                class="bi bi-calendar3 flex-shrink-0"
-                style="
-                    width: 20px;
-                    font-size: 16px;
-                "
-            ></i>
-
-            <span>
-                Jadwal
-            </span>
-
-        </a>
-
-
-        {{-- =================================================
-             PENGGUNA
-        ================================================== --}}
-
-        <a
-            href="#"
-            class="
-                user-menu-item
-                d-flex
-                align-items-center
-                gap-2
-                w-100
-                text-decoration-none
-            "
-            style="
-                min-height: 46px;
-                margin-bottom: 7px;
-                padding: 0 14px;
-                box-sizing: border-box;
-                border-radius: 10px;
-                color: #ffffff;
-                font-size: 14px;
-                font-weight: 500;
-                transition:
-                    background 0.2s ease,
-                    color 0.2s ease;
-            "
-        >
-
-            <i
-                class="bi bi-people flex-shrink-0"
-                style="
-                    width: 20px;
-                    font-size: 16px;
-                "
-            ></i>
-
-            <span>
-                Pengguna
-            </span>
+            >
+    
+                <i
+                    class="bi {{ $menu['icon'] }} flex-shrink-0"
+                    style="
+                        width: 20px;
+                        font-size: 16px;
+                    "
+                ></i>
+    
+    
+                <span>
+                    {{ $menu['label'] }}
+                </span>
+            
+            </a>
         
-        </a>
-
-
-        {{-- =================================================
-             PENGATURAN
-        ================================================== --}}
-
-        <a
-            href="#"
-            class="
-                user-menu-item
-                d-flex
-                align-items-center
-                gap-2
-                w-100
-                text-decoration-none
-            "
-            style="
-                min-height: 46px;
-                margin-bottom: 7px;
-                padding: 0 14px;
-                box-sizing: border-box;
-                border-radius: 10px;
-                color: #ffffff;
-                font-size: 14px;
-                font-weight: 500;
-                transition:
-                    background 0.2s ease,
-                    color 0.2s ease;
-            "
-        >
-
-            <i
-                class="bi bi-gear flex-shrink-0"
-                style="
-                    width: 20px;
-                    font-size: 16px;
-                "
-            ></i>
-
-            <span>
-                Pengaturan
-            </span>
-
-        </a>
-
+        @endforeach
+        
     </nav>
 
 

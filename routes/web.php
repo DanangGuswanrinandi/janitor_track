@@ -70,6 +70,14 @@ Route::middleware('auth')->group(function () {
 
     })->name('admin.dashboard');
 
+    Route::get('/admin/master-ruangan', function () {
+
+        return view(
+            'pages.admin.master_ruangan'
+        );
+
+    })->name('admin.master-ruangan');
+
 
     /*
     |--------------------------------------------------------------------------
