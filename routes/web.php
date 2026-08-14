@@ -73,7 +73,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/master-ruangan', function () {
 
         return view(
-            'pages.admin.master_ruangan'
+            'pages.admin.master_ruangan_page'
         );
 
     })->name('admin.master-ruangan');

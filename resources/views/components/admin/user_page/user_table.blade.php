@@ -2,978 +2,356 @@
      USER TABLE
 ========================================================== --}}
 
-<div class="w-100 overflow-auto">
-
-    <table
-        class="table align-middle mb-0"
-        style="
-            min-width: 820px;
-        "
-    >
-
-        <thead>
-
-            <tr>
-
-                <th
-                    class="fw-semibold text-center"
-                    style="
-                        width: 50px;
-                        color: #5f6875;
-                        font-size: 13px;
-                        white-space: nowrap;
-                    "
-                >
-                    <input
-                        type="checkbox"
-                        id="selectAllUsers"
-                        class="form-check-input m-0"
-                        style="
-                            width: 16px;
-                            height: 16px;
-                            cursor: pointer;
-                        "
-                        aria-label="Pilih semua pengguna"
-                    >
-                </th>
-
-                <th
-                    class="fw-semibold"
-                    style="
-                        width: 60px;
-                        color: #5f6875;
-                        font-size: 13px;
-                        white-space: nowrap;
-                    "
-                >
-                    No
-                </th>
-
-
-                <th
-                    class="fw-semibold"
-                    style="
-                        min-width: 160px;
-                        color: #5f6875;
-                        font-size: 13px;
-                        white-space: nowrap;
-                    "
-                >
-                    Username
-                </th>
-
-
-                <th
-                    class="fw-semibold"
-                    style="
-                        width: 150px;
-                        color: #5f6875;
-                        font-size: 13px;
-                        white-space: nowrap;
-                    "
-                >
-                    Role
-                </th>
-
-
-                <th
-                    class="fw-semibold"
-                    style="
-                        min-width: 160px;
-                        color: #5f6875;
-                        font-size: 13px;
-                        white-space: nowrap;
-                    "
-                >
-                    Created At
-                </th>
-
-
-                <th
-                    class="fw-semibold"
-                    style="
-                        min-width: 160px;
-                        color: #5f6875;
-                        font-size: 13px;
-                        white-space: nowrap;
-                    "
-                >
-                    Updated At
-                </th>
-
-
-                <th
-                    class="fw-semibold text-end"
-                    style="
-                        width: 120px;
-                        color: #5f6875;
-                        font-size: 13px;
-                        white-space: nowrap;
-                    "
-                >
-                    Aksi
-                </th>
-
-            </tr>
-
-        </thead>
-
-
-        <tbody>
-
-            @forelse ($users as $index => $user)
-
-                <tr>
-
-                    {{-- CHECKBOX USER --}}
-
-                    <td class="text-center">
-                    
-                        <input
-                            type="checkbox"
-                            name="selected_users[]"
-                            value="{{ $user->id }}"
-                            class="form-check-input user-checkbox m-0"
-                            style="
-                                width: 16px;
-                                height: 16px;
-                                cursor: pointer;
-                            "
-                            aria-label="Pilih {{ $user->username }}"
-                        >
-                    
-                    </td>
-
-                    {{-- NO --}}
-
-                    <td
-                        style="
-                            color: #6c7583;
-                            font-size: 13px;
-                        "
-                    >
-                        {{ $users->firstItem() + $index }}
-                    </td>
-
-
-                    {{-- USERNAME --}}
-
-                    <td>
-
-                        <span
-                            class="fw-semibold"
-                            style="
-                                color: #252a31;
-                                font-size: 13px;
-                            "
-                        >
-                            {{ $user->username }}
-                        </span>
-
-                    </td>
-
-
-                    {{-- ROLE --}}
-
-                    <td>
-
-                        <button
-                            type="button"
-                            class="role-switch d-inline-flex align-items-center"
-                            data-role="{{ $user->role }}"
-                            data-user-id="{{ $user->id }}"
-                            data-role-url="{{ route('admin.users.role.update', $user->id) }}"
-                            aria-label="Ubah role {{ $user->role }}"
-                            style="
-                                position: relative;
-                                width: 116px;
-                                height: 42px;
-                                padding: 4px;
-                                border: 0;
-                                border-radius: 22px;
-                                background: {{ $user->role === 'admin' ? '#eaf1ff' : '#edf0f5' }};
-                                color: {{ $user->role === 'admin' ? '#3478f6' : '#667080' }};
-                                cursor: pointer;
-                                transition:
-                                    background 0.2s ease,
-                                    color 0.2s ease;
-                            "
-                        >
-
-                            <span
-                                class="role-switch-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                                style="
-                                    width: 34px;
-                                    height: 34px;
-                                    border-radius: 50%;
-                                    background: #ffffff;
-                                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
-                                    transform: translateX({{ $user->role === 'admin' ? '74px' : '0' }});
-                                    transition: transform 0.2s ease;
-                                "
-                            >
-
-                                <span
-                                    class="role-switch-dot"
-                                    style="
-                                        width: 10px;
-                                        height: 10px;
-                                        border-radius: 50%;
-                                        background: {{ $user->role === 'admin' ? '#3478f6' : '#adb5bd' }};
-                                    "
-                                ></span>
-
-                            </span>
-
-
-                            <span
-                                class="role-switch-text position-absolute fw-semibold"
-                                style="
-                                    {{ $user->role === 'admin'
-                                        ? 'left: 12px; color: #3478f6;'
-                                        : 'right: 12px; color: #667080;' }}
-                                    font-size: 12px;
-                                    line-height: 1;
-                                "
-                            >
-                                {{ ucfirst($user->role) }}
-                            </span>
-
-                        </button>
-
-                    </td>
-
-
-                    {{-- CREATED AT --}}
-
-                    <td
-                        style="
-                            color: #6c7583;
-                            font-size: 13px;
-                            white-space: nowrap;
-                        "
-                    >
-                        {{ $user->created_at?->format('d M Y, H:i') }}
-                    </td>
-
-
-                    {{-- UPDATED AT --}}
-
-                    <td
-                        style="
-                            color: #6c7583;
-                            font-size: 13px;
-                            white-space: nowrap;
-                        "
-                    >
-                        {{ $user->updated_at?->format('d M Y, H:i') }}
-                    </td>
-
-
-                    {{-- AKSI --}}
-
-                    <td class="text-end">
-
-                        <div
-                            class="d-inline-flex align-items-center gap-2"
-                        >
-
-                            {{-- =================================================
-                                 EDIT
-                            ================================================== --}}
-
-                            <button
-                                type="button"
-                                class="btn btn-sm d-inline-flex align-items-center justify-content-center user-action-edit"
-                                data-bs-toggle="modal"
-                                data-bs-target="#updateUserModal"
-                                data-user-id="{{ $user->id }}"
-                                data-username="{{ $user->username }}"
-                                data-role="{{ $user->role }}"
-                                title="Edit pengguna"
-                                aria-label="Edit pengguna"
-                                style="
-                                    width: 34px;
-                                    height: 34px;
-                                    padding: 0;
-                                    border: 1px solid #dfe5ee;
-                                    border-radius: 8px;
-                                    background: #ffffff;
-                                    color: #3478f6;
-                                    font-size: 14px;
-                                "
-                            >
-
-                                <i class="bi bi-pencil"></i>
-
-                            </button>
-
-
-                            {{-- =================================================
-                                 DELETE
-                            ================================================== --}}
-
-                            <button
-                                type="button"
-                                class="btn btn-sm d-inline-flex align-items-center justify-content-center user-action-delete"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteUserModal"
-                                data-user-id="{{ $user->id }}"
-                                data-username="{{ $user->username }}"
-                                title="Hapus pengguna"
-                                aria-label="Hapus pengguna"
-                                style="
-                                    width: 34px;
-                                    height: 34px;
-                                    padding: 0;
-                                    border: 1px solid #f1d9dc;
-                                    border-radius: 8px;
-                                    background: #ffffff;
-                                    color: #dc3545;
-                                    font-size: 14px;
-                                "
-                            >
-
-                                <i class="bi bi-trash"></i>
-
-                            </button>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            @empty
-
-                <tr>
-
-                    <td
-                        colspan="7"
-                        class="text-center"
-                        style="
-                            padding: 40px 20px;
-                            color: #98a1b2;
-                            font-size: 13px;
-                        "
-                    >
-                        Belum ada pengguna.
-                    </td>
-
-                </tr>
-
-            @endforelse
-
-        </tbody>
-
-    </table>
-
-    {{-- =========================================================
-         PAGINATION
-    ========================================================== --}}
-    
-    @if ($users->hasPages())
-    
-        <div
-            class="d-flex align-items-center justify-content-between gap-3 mt-3"
+<x-admin.table
+    :items="$users"
+    storage-key="cleantrack_selected_user_ids"
+    checkbox-class="user-checkbox"
+    select-all-id="selectAllUsers"
+    delete-button-id="deleteSelectedUsersButton"
+    delete-modal-id="deleteSelectedUsersModal"
+    total-label="pengguna"
+    min-width="820px"
+>
+
+    {{-- =====================================================
+         TABLE HEADER
+    ====================================================== --}}
+
+    <x-slot:head>
+
+        <th
+            class="fw-semibold"
             style="
-                flex-wrap: wrap;
+                width: 60px;
+                color: #5f6875;
+                font-size: 13px;
+                white-space: nowrap;
             "
         >
-    
+            No
+        </th>
+
+
+        <th
+            class="fw-semibold"
+            style="
+                min-width: 160px;
+                color: #5f6875;
+                font-size: 13px;
+                white-space: nowrap;
+            "
+        >
+            Username
+        </th>
+
+
+        <th
+            class="fw-semibold"
+            style="
+                width: 150px;
+                color: #5f6875;
+                font-size: 13px;
+                white-space: nowrap;
+            "
+        >
+            Role
+        </th>
+
+
+        <th
+            class="fw-semibold"
+            style="
+                min-width: 160px;
+                color: #5f6875;
+                font-size: 13px;
+                white-space: nowrap;
+            "
+        >
+            Created At
+        </th>
+
+
+        <th
+            class="fw-semibold"
+            style="
+                min-width: 160px;
+                color: #5f6875;
+                font-size: 13px;
+                white-space: nowrap;
+            "
+        >
+            Updated At
+        </th>
+
+
+        <th
+            class="fw-semibold text-end"
+            style="
+                width: 120px;
+                color: #5f6875;
+                font-size: 13px;
+                white-space: nowrap;
+            "
+        >
+            Aksi
+        </th>
+
+    </x-slot:head>
+
+
+    {{-- =====================================================
+         TABLE BODY
+    ====================================================== --}}
+
+    <x-slot:body>
+
+    @forelse ($users as $index => $user)
+
+        <tr>
+
             {{-- =================================================
-                 PAGINATION INFO
+                 CHECKBOX
             ================================================== --}}
-    
-            <div
-                class="flex-shrink-0"
+
+            <td class="text-center">
+
+                <input
+                    type="checkbox"
+                    value="{{ $user->id }}"
+                    class="form-check-input user-checkbox m-0"
+                    style="
+                        width: 16px;
+                        height: 16px;
+                        cursor: pointer;
+                    "
+                    aria-label="Pilih {{ $user->username }}"
+                >
+
+            </td>
+
+
+            {{-- =================================================
+                 NO
+            ================================================== --}}
+
+            <td
                 style="
-                    color: #98a1b2;
-                    font-size: 12px;
+                    color: #6c7583;
+                    font-size: 13px;
+                "
+            >
+                {{ $users->firstItem() + $index }}
+            </td>
+
+
+            {{-- =================================================
+                 USERNAME
+            ================================================== --}}
+
+            <td>
+
+                <span
+                    class="fw-semibold"
+                    style="
+                        color: #252a31;
+                        font-size: 13px;
+                    "
+                >
+                    {{ $user->username }}
+                </span>
+
+            </td>
+
+
+            {{-- =================================================
+                 ROLE
+            ================================================== --}}
+
+            <td>
+
+                {{-- ROLE SWITCH KAMU YANG SEKARANG --}}
+
+                <button
+                    type="button"
+                    class="role-switch d-inline-flex align-items-center"
+                    data-role="{{ $user->role }}"
+                    data-user-id="{{ $user->id }}"
+                    data-role-url="{{ route('admin.users.role.update', $user->id) }}"
+                    aria-label="Ubah role {{ $user->role }}"
+                    style="
+                        position: relative;
+                        width: 116px;
+                        height: 42px;
+                        padding: 4px;
+                        border: 0;
+                        border-radius: 22px;
+                        background: {{ $user->role === 'admin' ? '#eaf1ff' : '#edf0f5' }};
+                        color: {{ $user->role === 'admin' ? '#3478f6' : '#667080' }};
+                        cursor: pointer;
+                    "
+                >
+
+                    <span
+                        class="role-switch-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="
+                            width: 34px;
+                            height: 34px;
+                            border-radius: 50%;
+                            background: #ffffff;
+                            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
+                            transform: translateX({{ $user->role === 'admin' ? '74px' : '0' }});
+                            transition: transform 0.2s ease;
+                        "
+                    >
+
+                        <span
+                            class="role-switch-dot"
+                            style="
+                                width: 10px;
+                                height: 10px;
+                                border-radius: 50%;
+                                background: {{ $user->role === 'admin' ? '#3478f6' : '#adb5bd' }};
+                            "
+                        ></span>
+
+                    </span>
+
+
+                    <span
+                        class="role-switch-text position-absolute fw-semibold"
+                        style="
+                            {{ $user->role === 'admin'
+                                ? 'left: 12px; color: #3478f6;'
+                                : 'right: 12px; color: #667080;' }}
+                            font-size: 12px;
+                            line-height: 1;
+                        "
+                    >
+                        {{ ucfirst($user->role) }}
+                    </span>
+
+                </button>
+
+            </td>
+
+
+            {{-- =================================================
+                 CREATED AT
+            ================================================== --}}
+
+            <td
+                style="
+                    color: #6c7583;
+                    font-size: 13px;
                     white-space: nowrap;
                 "
             >
-    
-                Menampilkan
-    
-                <span
-                    class="fw-semibold"
-                    style="
-                        color: #5f6875;
-                    "
-                >
-                    {{ $users->firstItem() }}
-                </span>
-            
-                -
-            
-                <span
-                    class="fw-semibold"
-                    style="
-                        color: #5f6875;
-                    "
-                >
-                    {{ $users->lastItem() }}
-                </span>
-            
-                dari
-            
-                <span
-                    class="fw-semibold"
-                    style="
-                        color: #5f6875;
-                    "
-                >
-                    {{ $users->total() }}
-                </span>
-            
-                pengguna
-            
-            </div>
-        
-        
+                {{ $user->created_at?->format('d M Y, H:i') }}
+            </td>
+
+
             {{-- =================================================
-                 PAGINATION BUTTON
+                 UPDATED AT
             ================================================== --}}
-        
-            <nav
-                aria-label="Navigasi halaman pengguna"
-                class="flex-shrink-0"
+
+            <td
+                style="
+                    color: #6c7583;
+                    font-size: 13px;
+                    white-space: nowrap;
+                "
             >
-        
-                <ul
-                    class="pagination mb-0"
+                {{ $user->updated_at?->format('d M Y, H:i') }}
+            </td>
+
+
+            {{-- =================================================
+                 AKSI
+            ================================================== --}}
+
+            <td class="text-end">
+
+                <div
+                    class="d-inline-flex align-items-center gap-2"
                 >
-        
-                    {{-- =================================================
-                         PREVIOUS
-                    ================================================== --}}
-        
-                    <li
-                        class="page-item {{ $users->onFirstPage() ? 'disabled' : '' }}"
+
+                    <button
+                        type="button"
+                        class="btn btn-sm d-inline-flex align-items-center justify-content-center user-action-edit"
+                        data-bs-toggle="modal"
+                        data-bs-target="#updateUserModal"
+                        data-user-id="{{ $user->id }}"
+                        data-username="{{ $user->username }}"
+                        data-role="{{ $user->role }}"
+                        title="Edit pengguna"
+                        aria-label="Edit pengguna"
+                        style="
+                            width: 34px;
+                            height: 34px;
+                            padding: 0;
+                            border: 1px solid #dfe5ee;
+                            border-radius: 8px;
+                            background: #ffffff;
+                            color: #3478f6;
+                            font-size: 14px;
+                        "
                     >
-        
-                        @if ($users->onFirstPage())
-        
-                            <span
-                                class="page-link d-flex align-items-center justify-content-center"
-                                aria-hidden="true"
-                                style="
-                                    width: 42px;
-                                    height: 42px;
-                                    color: #98a1b2;
-                                    background: #f1f3f6;
-                                "
-                            >
-                                &lsaquo;
-                            </span>
-                        
-                        @else
-                        
-                            <a
-                                class="page-link d-flex align-items-center justify-content-center"
-                                href="{{ $users->previousPageUrl() }}"
-                                aria-label="Halaman sebelumnya"
-                                style="
-                                    width: 42px;
-                                    height: 42px;
-                                    color: #3478f6;
-                                "
-                            >
-                                &lsaquo;
-                            </a>
-                        
-                        @endif
-                        
-                    </li>
-                
-                
-                    {{-- =================================================
-                         PAGE NUMBER
-                    ================================================== --}}
-                
-                    @foreach ($users->getUrlRange(
-                        max(1, $users->currentPage() - 1),
-                        min($users->lastPage(), $users->currentPage() + 1)
-                    ) as $page => $url)
-    
-                        <li
-                            class="page-item {{ $page == $users->currentPage() ? 'active' : '' }}"
-                        >
-                
-                            <a
-                                class="page-link d-flex align-items-center justify-content-center"
-                                href="{{ $url }}"
-                                style="
-                                    width: 42px;
-                                    height: 42px;
-                                    {{ $page == $users->currentPage()
-                                        ? 'background: #3478f6; border-color: #3478f6; color: #ffffff;'
-                                        : 'color: #3478f6;' }}
-                                "
-                            >
-                                {{ $page }}
-                            </a>
-                        
-                        </li>
-                    
-                    @endforeach
-                    
-                    
-                    {{-- =================================================
-                         NEXT
-                    ================================================== --}}
-                    
-                    <li
-                        class="page-item {{ $users->hasMorePages() ? '' : 'disabled' }}"
+                        <i class="bi bi-pencil"></i>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-sm d-inline-flex align-items-center justify-content-center user-action-delete"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteUserModal"
+                        data-user-id="{{ $user->id }}"
+                        data-username="{{ $user->username }}"
+                        title="Hapus pengguna"
+                        aria-label="Hapus pengguna"
+                        style="
+                            width: 34px;
+                            height: 34px;
+                            padding: 0;
+                            border: 1px solid #f1d9dc;
+                            border-radius: 8px;
+                            background: #ffffff;
+                            color: #dc3545;
+                            font-size: 14px;
+                        "
                     >
-                    
-                        @if ($users->hasMorePages())
-                    
-                            <a
-                                class="page-link d-flex align-items-center justify-content-center"
-                                href="{{ $users->nextPageUrl() }}"
-                                aria-label="Halaman berikutnya"
-                                style="
-                                    width: 42px;
-                                    height: 42px;
-                                    color: #3478f6;
-                                "
-                            >
-                                &rsaquo;
-                            </a>
-                        
-                        @else
-                        
-                            <span
-                                class="page-link d-flex align-items-center justify-content-center"
-                                aria-hidden="true"
-                                style="
-                                    width: 42px;
-                                    height: 42px;
-                                    color: #98a1b2;
-                                "
-                            >
-                                &rsaquo;
-                            </span>
-                        
-                        @endif
-                        
-                    </li>
-                
-                </ul>
-            
-            </nav>
-        
-        </div>
-    
-    @endif
+                        <i class="bi bi-trash"></i>
+                    </button>
 
-    
+                </div>
 
-    {{-- =========================================================
-         BULK DELETE
-    ========================================================== --}}
-    
-    <div
-        class="d-flex align-items-center justify-content-end mt-3"
-    >
-    
-        <button
-            type="button"
-            id="deleteSelectedUsersButton"
-            class="btn fw-semibold d-inline-flex align-items-center gap-2"
-            data-bs-toggle="modal"
-            data-bs-target="#deleteSelectedUsersModal"
-            disabled
-            style="
-                min-height: 40px;
-                padding: 8px 14px;
-                border: 1px solid #f1d9dc;
-                border-radius: 9px;
-                background: #ffffff;
-                color: #dc3545;
-                font-size: 13px;
-                opacity: 0.55;
-                cursor: not-allowed;
-            "
-        >
-    
-            <i class="bi bi-trash"></i>
-    
-            <span>
-                Hapus Pilihan
-            </span>
-        
-        </button>
-    
-    </div>
+            </td>
 
-</div>
+        </tr>
 
-{{-- =========================================================
-     BULK SELECT SCRIPT
-========================================================== --}}
+    @empty
 
-<script>
+        <tr>
 
-    document.addEventListener(
-        'DOMContentLoaded',
-        function () {
+            <td
+                colspan="7"
+                class="text-center"
+                style="
+                    padding: 40px 20px;
+                    color: #98a1b2;
+                    font-size: 13px;
+                "
+            >
+                Belum ada pengguna.
+            </td>
 
-            /*
-            |--------------------------------------------------------------------------
-            | ELEMENT
-            |--------------------------------------------------------------------------
-            */
+        </tr>
 
-            const selectAll =
-                document.getElementById(
-                    'selectAllUsers'
-                );
+    @endforelse
 
+</x-slot:body>
 
-            const userCheckboxes =
-                document.querySelectorAll(
-                    '.user-checkbox'
-                );
-
-
-            const deleteButton =
-                document.getElementById(
-                    'deleteSelectedUsersButton'
-                );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | STORAGE KEY
-            |--------------------------------------------------------------------------
-            */
-
-            const storageKey =
-                'cleantrack_selected_user_ids';
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | AMBIL SELECTION YANG TERSIMPAN
-            |--------------------------------------------------------------------------
-            */
-
-            let selectedUserIds =
-                new Set(
-                    JSON.parse(
-                        sessionStorage.getItem(
-                            storageKey
-                        ) || '[]'
-                    ).map(
-                        String
-                    )
-                );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | SIMPAN SELECTION
-            |--------------------------------------------------------------------------
-            */
-
-            function saveSelectedUsers() {
-
-                sessionStorage.setItem(
-                    storageKey,
-                    JSON.stringify(
-                        [...selectedUserIds]
-                    )
-                );
-
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE DELETE BUTTON
-            |--------------------------------------------------------------------------
-            */
-
-            function updateDeleteButton() {
-
-                if (!deleteButton) {
-                    return;
-                }
-
-
-                const hasSelectedUsers =
-                    selectedUserIds.size > 0;
-
-
-                deleteButton.disabled =
-                    !hasSelectedUsers;
-
-
-                if (hasSelectedUsers) {
-
-                    deleteButton.style.opacity =
-                        '1';
-
-                    deleteButton.style.cursor =
-                        'pointer';
-
-                } else {
-
-                    deleteButton.style.opacity =
-                        '0.55';
-
-                    deleteButton.style.cursor =
-                        'not-allowed';
-
-                }
-
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE SELECT ALL
-            |--------------------------------------------------------------------------
-            |
-            | Select All hanya berlaku untuk data
-            | yang sedang tampil di halaman aktif.
-            |
-            */
-
-            function updateSelectAll() {
-
-                if (!selectAll) {
-                    return;
-                }
-
-
-                const totalUsers =
-                    userCheckboxes.length;
-
-
-                const selectedUsersOnPage =
-                    Array.from(
-                        userCheckboxes
-                    ).filter(
-                        function (checkbox) {
-
-                            return selectedUserIds.has(
-                                String(
-                                    checkbox.value
-                                )
-                            );
-
-                        }
-                    ).length;
-
-
-                if (totalUsers === 0) {
-
-                    selectAll.checked =
-                        false;
-
-                    selectAll.indeterminate =
-                        false;
-
-                    return;
-
-                }
-
-
-                if (
-                    selectedUsersOnPage ===
-                    totalUsers
-                ) {
-
-                    selectAll.checked =
-                        true;
-
-                    selectAll.indeterminate =
-                        false;
-
-                } else if (
-                    selectedUsersOnPage > 0
-                ) {
-
-                    selectAll.checked =
-                        false;
-
-                    selectAll.indeterminate =
-                        true;
-
-                } else {
-
-                    selectAll.checked =
-                        false;
-
-                    selectAll.indeterminate =
-                        false;
-
-                }
-
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | RESTORE CHECKBOX
-            |--------------------------------------------------------------------------
-            |
-            | Saat pagination dibuka kembali,
-            | checkbox yang sebelumnya dipilih akan
-            | otomatis dicentang.
-            |
-            */
-
-            function restoreSelectedUsers() {
-
-                userCheckboxes.forEach(
-                    function (checkbox) {
-
-                        const userId =
-                            String(
-                                checkbox.value
-                            );
-
-
-                        checkbox.checked =
-                            selectedUserIds.has(
-                                userId
-                            );
-
-                    }
-                );
-
-
-                updateSelectAll();
-
-                updateDeleteButton();
-
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | SELECT ALL
-            |--------------------------------------------------------------------------
-            */
-
-            if (selectAll) {
-
-                selectAll.addEventListener(
-                    'change',
-                    function () {
-
-                        userCheckboxes.forEach(
-                            function (checkbox) {
-
-                                const userId =
-                                    String(
-                                        checkbox.value
-                                    );
-
-
-                                if (
-                                    selectAll.checked
-                                ) {
-
-                                    selectedUserIds.add(
-                                        userId
-                                    );
-
-                                } else {
-
-                                    selectedUserIds.delete(
-                                        userId
-                                    );
-
-                                }
-
-
-                                checkbox.checked =
-                                    selectAll.checked;
-
-                            }
-                        );
-
-
-                        saveSelectedUsers();
-
-                        updateSelectAll();
-
-                        updateDeleteButton();
-
-                    }
-                );
-
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | CHECKBOX INDIVIDUAL
-            |--------------------------------------------------------------------------
-            */
-
-            userCheckboxes.forEach(
-                function (checkbox) {
-
-                    checkbox.addEventListener(
-                        'change',
-                        function () {
-
-                            const userId =
-                                String(
-                                    checkbox.value
-                                );
-
-
-                            if (
-                                checkbox.checked
-                            ) {
-
-                                selectedUserIds.add(
-                                    userId
-                                );
-
-                            } else {
-
-                                selectedUserIds.delete(
-                                    userId
-                                );
-
-                            }
-
-
-                            saveSelectedUsers();
-
-                            updateSelectAll();
-
-                            updateDeleteButton();
-
-                        }
-                    );
-
-                }
-            );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | INITIALIZE
-            |--------------------------------------------------------------------------
-            */
-
-            restoreSelectedUsers();
-
-        }
-    );
-
-</script>
-
+</x-admin.table>
 
 {{-- =========================================================
      STYLE

@@ -224,8 +224,8 @@
         function () {
 
             const deleteButton =
-                document.getElementById(
-                    'deleteSelectedUsersButton'
+                document.querySelector(
+                    '.admin-table-delete-selected'
                 );
 
 
