@@ -41,15 +41,34 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
-    /*
+
+/*
     |--------------------------------------------------------------------------
-    | Dashboard
+    | User Dashboard
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/dashboard', function () {
-        return view('pages.admin.dashboard');
-    })->name('dashboard');
+    Route::get('/user/dashboard', function () {
+
+        return view(
+            'pages.users.dashboard'
+        );
+
+    })->name('user.dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Dashboard
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/admin/dashboard', function () {
+
+        return view(
+            'pages.admin.dashboard'
+        );
+
+    })->name('admin.dashboard');
 
 
     /*
@@ -58,24 +77,39 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/users', [UserController::class, 'index'])
-        ->name('admin.users.index');
+    Route::get(
+        '/users',
+        [UserController::class, 'index']
+    )->name('admin.users.index');
 
-    Route::post('/users', [UserController::class, 'store'])
-        ->name('admin.users.store');
 
-    Route::put('/users/{user}', [UserController::class, 'update'])
-        ->name('admin.users.update');
+    Route::post(
+        '/users',
+        [UserController::class, 'store']
+    )->name('admin.users.store');
 
-    Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])
-        ->name('admin.users.role.update');
 
-    Route::delete('/users/bulk-destroy', [UserController::class, 'bulkDestroy']
-        )->name('admin.users.bulk-destroy');
+    Route::put(
+        '/users/{user}',
+        [UserController::class, 'update']
+    )->name('admin.users.update');
 
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])
-        ->name('admin.users.destroy');
 
-   
+    Route::patch(
+        '/users/{user}/role',
+        [UserController::class, 'updateRole']
+    )->name('admin.users.role.update');
+
+
+    Route::delete(
+        '/users/bulk-destroy',
+        [UserController::class, 'bulkDestroy']
+    )->name('admin.users.bulk-destroy');
+
+
+    Route::delete(
+        '/users/{user}',
+        [UserController::class, 'destroy']
+    )->name('admin.users.destroy');
 
 });

@@ -52,17 +52,17 @@
 
 
         /* =========================================================
-           ADMIN LAYOUT
+           user LAYOUT
         ========================================================== */
 
-        .admin-wrapper {
+        .user-wrapper {
             display: flex;
             width: 100%;
             min-height: 100vh;
         }
 
 
-        .admin-main {
+        .user-main {
             flex: 1;
             min-width: 0;
             min-height: 100vh;
@@ -71,7 +71,7 @@
         }
 
 
-        .admin-content {
+        .user-content {
             width: 100%;
             padding: 28px;
             box-sizing: border-box;
@@ -93,11 +93,11 @@
 
         @media (max-width: 991.98px) {
 
-            .admin-main {
+            .user-main {
                 margin-left: 0;
             }
 
-            .admin-content {
+            .user-content {
                 padding: 20px;
             }
 
@@ -117,7 +117,7 @@
 
         @media (max-width: 575.98px) {
 
-            .admin-content {
+            .user-content {
                 padding: 16px;
             }
 
@@ -132,13 +132,13 @@
 
 <body>
 
-    <div class="admin-wrapper">
+    <div class="user-wrapper">
 
         {{-- =====================================================
              SIDEBAR
         ====================================================== --}}
 
-        @include('components.admin.sidebar')
+        @include('components.user.sidebar')
 
 
         {{-- =====================================================
@@ -155,14 +155,14 @@
              MAIN
         ====================================================== --}}
 
-        <div class="admin-main">
+        <div class="user-main">
 
             {{-- Navbar --}}
             @include('components.navbar')
 
 
             {{-- Page Content --}}
-            <main class="admin-content">
+            <main class="user-content">
 
                 @yield('content')
 
@@ -184,7 +184,7 @@
             function () {
 
                 const sidebar =
-                    document.getElementById('adminSidebar');
+                    document.getElementById('userSidebar');
 
                 const overlay =
                     document.getElementById('sidebarOverlay');
@@ -335,86 +335,6 @@
         );
 
     </script>
-
-    {{-- =========================================================
-         CLEAR USER SELECTION WHEN LEAVING USER PAGE
-    ========================================================== --}}
-
-    <script>
-
-        document.addEventListener(
-            'DOMContentLoaded',
-            function () {
-
-                const userPagePath =
-                    "{{ parse_url(route('admin.users.index'), PHP_URL_PATH) }}";
-
-                const currentPath =
-                    window.location.pathname;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Semua link navigasi sidebar
-                |--------------------------------------------------------------------------
-                */
-
-                const sidebar =
-                    document.getElementById('adminSidebar');
-
-
-                if (!sidebar) {
-                    return;
-                }
-
-
-                const sidebarLinks =
-                    sidebar.querySelectorAll('a[href]');
-
-
-                sidebarLinks.forEach(
-                    function (link) {
-
-                        link.addEventListener(
-                            'click',
-                            function () {
-
-                                const targetUrl =
-                                    new URL(
-                                        link.href,
-                                        window.location.origin
-                                    );
-
-
-                                /*
-                                |--------------------------------------------------------------------------
-                                | Jika sedang berada di halaman Users
-                                | dan pindah ke halaman lain
-                                |--------------------------------------------------------------------------
-                                */
-
-                                if (
-                                    currentPath === userPagePath &&
-                                    targetUrl.pathname !== userPagePath
-                                ) {
-
-                                    sessionStorage.removeItem(
-                                        'cleantrack_selected_user_ids'
-                                    );
-
-                                }
-
-                            }
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-    </script>
-
 
     @stack('scripts')
 

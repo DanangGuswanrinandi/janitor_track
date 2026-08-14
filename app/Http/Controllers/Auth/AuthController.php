@@ -30,11 +30,40 @@ class AuthController extends Controller
      */
     public function login(Request $request): RedirectResponse
     {
-        $this->authService->login($request);
+        $user =
+            $this->authService->login(
+                $request
+            );  
+    
+
+        /*
+        |--------------------------------------------------------------------------
+        | Redirect Berdasarkan Role
+        |--------------------------------------------------------------------------
+        */  
+
+        if ($user->role === 'admin') {  
+
+            return redirect()
+                ->intended(
+                    route('admin.dashboard')
+                )
+                ->with(
+                    'success',
+                    'Login berhasil.'
+                );  
+
+        }   
+    
 
         return redirect()
-            ->intended(route('dashboard'))
-            ->with('success', 'Login berhasil.');
+            ->intended(
+                route('user.dashboard')
+            )
+            ->with(
+                'success',
+                'Login berhasil.'
+            );
     }
 
 

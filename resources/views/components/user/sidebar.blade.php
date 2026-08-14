@@ -1,9 +1,9 @@
 {{-- =========================================================
-     ADMIN SIDEBAR
+     USER SIDEBAR
 ========================================================== --}}
 
 <aside
-    id="adminSidebar"
+    id="userSidebar"
     class="position-fixed top-0 start-0 d-flex flex-column"
     style="
         z-index: 1050;
@@ -112,15 +112,15 @@
         ================================================== --}}
 
         <a
-            href="{{ route('admin.dashboard') }}"
+            href="{{ route('user.dashboard') }}"
             class="
-                admin-menu-item
+                user-menu-item
                 d-flex
                 align-items-center
                 gap-2
                 w-100
                 text-decoration-none
-                {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}
+                {{ request()->routeIs('user.dashboard') ? 'active' : '' }}
             "
             style="
                 min-height: 46px;
@@ -159,7 +159,7 @@
         <a
             href="#"
             class="
-                admin-menu-item
+                user-menu-item
                 d-flex
                 align-items-center
                 gap-2
@@ -203,7 +203,7 @@
         <a
             href="#"
             class="
-                admin-menu-item
+                user-menu-item
                 d-flex
                 align-items-center
                 gap-2
@@ -247,7 +247,7 @@
         <a
             href="#"
             class="
-                admin-menu-item
+                user-menu-item
                 d-flex
                 align-items-center
                 gap-2
@@ -289,15 +289,14 @@
         ================================================== --}}
 
         <a
-            href="{{ route('admin.users.index') }}"
+            href="#"
             class="
-                admin-menu-item
+                user-menu-item
                 d-flex
                 align-items-center
                 gap-2
                 w-100
                 text-decoration-none
-                {{ request()->routeIs('admin.users.*') ? 'active' : '' }}
             "
             style="
                 min-height: 46px;
@@ -336,7 +335,7 @@
         <a
             href="#"
             class="
-                admin-menu-item
+                user-menu-item
                 d-flex
                 align-items-center
                 gap-2
@@ -427,7 +426,7 @@
        MENU HOVER
     ========================================================== */
 
-    .admin-menu-item:hover {
+    .user-menu-item:hover {
         background: rgba(255, 255, 255, 0.14);
         color: #ffffff !important;
     }
@@ -437,7 +436,7 @@
        ACTIVE MENU
     ========================================================== */
 
-    .admin-menu-item.active {
+    .user-menu-item.active {
         background: #ffffff !important;
         color: #3478f6 !important;
         box-shadow:
@@ -445,7 +444,7 @@
     }
 
 
-    .admin-menu-item.active:hover {
+    .user-menu-item.active:hover {
         background: #ffffff !important;
         color: #3478f6 !important;
     }
@@ -457,13 +456,13 @@
 
     @media (max-width: 991.98px) {
 
-        #adminSidebar {
+        #userSidebar {
             transform: translateX(-100%);
             box-shadow: 8px 0 30px rgba(0, 0, 0, 0.15);
         }
 
 
-        #adminSidebar.mobile-open {
+        #userSidebar.mobile-open {
             transform: translateX(0);
         }
 
