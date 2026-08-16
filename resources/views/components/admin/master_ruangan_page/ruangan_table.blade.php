@@ -4,6 +4,13 @@
 
 @php
 
+    /*
+    |--------------------------------------------------------------------------
+    | DATA DUMMY SEMENTARA
+    |--------------------------------------------------------------------------
+    | Nanti bagian ini tinggal diganti dengan data dari database.
+    */
+
     $roomData = collect([
 
         (object) [
@@ -11,6 +18,8 @@
             'kode_ruangan' => 'RNG-001',
             'nama_ruangan' => 'Ruang Kepala Sekolah',
             'lokasi' => 'Lantai 1',
+            'latitude' => '-7.155123',
+            'longitude' => '112.654321',
             'created_at' => now(),
             'updated_at' => now(),
         ],
@@ -20,6 +29,8 @@
             'kode_ruangan' => 'RNG-002',
             'nama_ruangan' => 'Ruang Guru',
             'lokasi' => 'Lantai 1',
+            'latitude' => '-7.155234',
+            'longitude' => '112.654432',
             'created_at' => now(),
             'updated_at' => now(),
         ],
@@ -29,6 +40,8 @@
             'kode_ruangan' => 'RNG-003',
             'nama_ruangan' => 'Laboratorium Komputer',
             'lokasi' => 'Lantai 1',
+            'latitude' => '-7.155345',
+            'longitude' => '112.654543',
             'created_at' => now(),
             'updated_at' => now(),
         ],
@@ -38,6 +51,8 @@
             'kode_ruangan' => 'RNG-004',
             'nama_ruangan' => 'Ruang Kelas 1A',
             'lokasi' => 'Lantai 2',
+            'latitude' => '-7.155456',
+            'longitude' => '112.654654',
             'created_at' => now(),
             'updated_at' => now(),
         ],
@@ -47,12 +62,20 @@
             'kode_ruangan' => 'RNG-005',
             'nama_ruangan' => 'Ruang Kelas 1B',
             'lokasi' => 'Lantai 2',
+            'latitude' => '-7.155567',
+            'longitude' => '112.654765',
             'created_at' => now(),
             'updated_at' => now(),
         ],
 
     ]);
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAGINATION DUMMY SEMENTARA
+    |--------------------------------------------------------------------------
+    */
 
     $rooms = new \Illuminate\Pagination\LengthAwarePaginator(
         $roomData,
@@ -80,7 +103,7 @@
     delete-button-id="deleteSelectedRoomsButton"
     delete-modal-id=""
     total-label="ruangan"
-    min-width="820px"
+    min-width="1100px"
 >
 
 
@@ -92,13 +115,30 @@
 
 
         {{-- =================================================
+             NO
+        ================================================== --}}
+
+        <th
+            class="fw-semibold"
+            style="
+                width: 60px;
+                color: #5f6875;
+                font-size: 13px;
+                white-space: nowrap;
+            "
+        >
+            No
+        </th>
+
+
+        {{-- =================================================
              KODE RUANGAN
         ================================================== --}}
 
         <th
             class="fw-semibold"
             style="
-                min-width: 130px;
+                min-width: 140px;
                 color: #5f6875;
                 font-size: 13px;
                 white-space: nowrap;
@@ -139,6 +179,23 @@
             "
         >
             Lokasi
+        </th>
+
+
+        {{-- =================================================
+             KOORDINAT
+        ================================================== --}}
+
+        <th
+            class="fw-semibold"
+            style="
+                min-width: 220px;
+                color: #5f6875;
+                font-size: 13px;
+                white-space: nowrap;
+            "
+        >
+            Koordinat
         </th>
 
 
@@ -203,28 +260,27 @@
 
         @forelse ($rooms as $index => $room)
 
-            <tr>
-
+            <tr data-room-id="{{ $room->id }}">
 
                 {{-- =================================================
-                     CHECKBOX
-                ================================================== --}}
+                 CHECKBOX
+            ================================================== --}}
 
-                <td class="text-center">
+            <td class="text-center">
 
-                    <input
-                        type="checkbox"
-                        value="{{ $room->id }}"
-                        class="form-check-input room-checkbox m-0"
-                        style="
-                            width: 16px;
-                            height: 16px;
-                            cursor: pointer;
-                        "
-                        aria-label="Pilih {{ $room->nama_ruangan }}"
-                    >
+                <input
+                    type="checkbox"
+                    value="{{ $room->id }}"
+                    class="form-check-input room-checkbox m-0"
+                    style="
+                        width: 16px;
+                        height: 16px;
+                        cursor: pointer;
+                    "
+                    aria-label="Pilih {{ $room->nama_ruangan }}"
+                >
 
-                </td>
+            </td>
 
 
                 {{-- =================================================
@@ -237,7 +293,7 @@
                         font-size: 13px;
                     "
                 >
-                    {{ $index + 1 }}
+                    {{ $rooms->firstItem() + $index }}
                 </td>
 
 
@@ -294,6 +350,24 @@
 
 
                 {{-- =================================================
+                     KOORDINAT
+                ================================================== --}}
+
+                <td
+                    style="
+                        color: #6c7583;
+                        font-size: 13px;
+                        white-space: nowrap;
+                    "
+                >
+
+                    {{ $room->latitude }},
+                    {{ $room->longitude }}
+
+                </td>
+
+
+                {{-- =================================================
                      CREATED AT
                 ================================================== --}}
 
@@ -304,7 +378,7 @@
                         white-space: nowrap;
                     "
                 >
-                    {{ $room->created_at->format('d M Y, H:i') }}
+                    {{ $room->created_at?->format('d M Y, H:i') }}
                 </td>
 
 
@@ -319,7 +393,7 @@
                         white-space: nowrap;
                     "
                 >
-                    {{ $room->updated_at->format('d M Y, H:i') }}
+                    {{ $room->updated_at?->format('d M Y, H:i') }}
                 </td>
 
 
@@ -333,11 +407,20 @@
                         class="d-inline-flex align-items-center gap-2"
                     >
 
-                        {{-- EDIT --}}
+                        {{-- =================================================
+                             EDIT
+                        ================================================== --}}
 
                         <button
                             type="button"
-                            class="btn btn-sm d-inline-flex align-items-center justify-content-center room-action-edit"
+                            class="
+                                btn
+                                btn-sm
+                                d-inline-flex
+                                align-items-center
+                                justify-content-center
+                                room-action-edit
+                            "
                             title="Edit ruangan"
                             aria-label="Edit ruangan"
                             style="
@@ -351,15 +434,26 @@
                                 font-size: 14px;
                             "
                         >
+
                             <i class="bi bi-pencil"></i>
+
                         </button>
 
 
-                        {{-- DELETE --}}
+                        {{-- =================================================
+                             DELETE
+                        ================================================== --}}
 
                         <button
                             type="button"
-                            class="btn btn-sm d-inline-flex align-items-center justify-content-center room-action-delete"
+                            class="
+                                btn
+                                btn-sm
+                                d-inline-flex
+                                align-items-center
+                                justify-content-center
+                                room-action-delete
+                            "
                             title="Hapus ruangan"
                             aria-label="Hapus ruangan"
                             style="
@@ -373,7 +467,9 @@
                                 font-size: 14px;
                             "
                         >
+
                             <i class="bi bi-trash"></i>
+
                         </button>
 
                     </div>
@@ -387,7 +483,7 @@
             <tr>
 
                 <td
-                    colspan="8"
+                    colspan="9"
                     class="text-center"
                     style="
                         padding: 40px 20px;
@@ -413,11 +509,23 @@
 
 <style>
 
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT BUTTON
+    |--------------------------------------------------------------------------
+    */
+
     .room-action-edit:hover {
         background: #f5f8ff !important;
         border-color: #cbdcff !important;
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE BUTTON
+    |--------------------------------------------------------------------------
+    */
 
     .room-action-delete:hover {
         background: #fff5f5 !important;
