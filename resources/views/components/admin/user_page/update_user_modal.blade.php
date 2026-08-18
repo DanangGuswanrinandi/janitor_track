@@ -412,7 +412,7 @@
 
 
                                 form.action =
-                                    `/users/${id}`;
+                                    `/admin/users/${id}`;
 
                             }
                         );
@@ -435,7 +435,7 @@
                 if (errorUserId) {
 
                     form.action =
-                        `/users/${errorUserId}`;
+                        `/admin/users/${errorUserId}`;
 
                 }
 

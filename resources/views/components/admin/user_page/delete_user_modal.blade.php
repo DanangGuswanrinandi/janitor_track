@@ -233,7 +233,7 @@
 
 
                                 form.action =
-                                    `/users/${id}`;
+                                    `/admin/users/${id}`;
 
                             }
                         );

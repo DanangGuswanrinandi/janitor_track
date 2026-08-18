@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\MasterRuanganController;
 
 
 /*
@@ -70,14 +71,52 @@ Route::middleware('auth')->group(function () {
 
     })->name('admin.dashboard');
 
-    Route::get('/admin/master-ruangan', function () {
+    /*
+    |--------------------------------------------------------------------------
+    | Master Ruangan
+    |--------------------------------------------------------------------------
+    */
 
-        return view(
-            'pages.admin.master_ruangan_page'
-        );
+    Route::get(
+        '/admin/master-ruangan',
+        [
+            MasterRuanganController::class,
+            'index'
+        ]
+    )->name(
+        'admin.master-ruangan'
+    );
 
-    })->name('admin.master-ruangan');
 
+    Route::post(
+        '/admin/master-ruangan',
+        [
+            MasterRuanganController::class,
+            'store'
+        ]
+    )->name(
+        'admin.master-ruangan.store'
+    );
+    
+    Route::put(
+        '/admin/master-ruangan/{masterRuangan}',
+        [
+            MasterRuanganController::class,
+            'update'
+        ]
+    )->name(
+        'admin.master-ruangan.update'
+    );
+
+    Route::delete(
+        '/admin/master-ruangan/{masterRuangan}',
+        [
+            MasterRuanganController::class,
+            'destroy'
+        ]
+    )->name(
+        'admin.master-ruangan.destroy'
+    );
 
     /*
     |--------------------------------------------------------------------------
@@ -86,37 +125,37 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get(
-        '/users',
+        '/admin/users',
         [UserController::class, 'index']
     )->name('admin.users.index');
 
 
     Route::post(
-        '/users',
+        '/admin/users',
         [UserController::class, 'store']
     )->name('admin.users.store');
 
 
     Route::put(
-        '/users/{user}',
+        '/admin/users/{user}',
         [UserController::class, 'update']
     )->name('admin.users.update');
 
 
     Route::patch(
-        '/users/{user}/role',
+        '/admin/users/{user}/role',
         [UserController::class, 'updateRole']
     )->name('admin.users.role.update');
 
 
     Route::delete(
-        '/users/bulk-destroy',
+        '/admin/users/bulk-destroy',
         [UserController::class, 'bulkDestroy']
     )->name('admin.users.bulk-destroy');
 
 
     Route::delete(
-        '/users/{user}',
+        '/admin/users/{user}',
         [UserController::class, 'destroy']
     )->name('admin.users.destroy');
 

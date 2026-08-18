@@ -47,6 +47,33 @@
 
         </div>
 
+                {{-- =====================================================
+             SUCCESS ALERT
+        ====================================================== --}}
+
+        @if (session('success'))
+
+            <div
+                class="alert d-flex align-items-center gap-2 mb-4"
+                style="
+                    border: 1px solid #cfe2ff;
+                    border-radius: 10px;
+                    background: #eaf1ff;
+                    color: #3478f6;
+                    font-size: 13px;
+                "
+            >
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span>
+                    {{ session('success') }}
+                </span>
+
+            </div>
+
+        @endif
+
         <div
             class="w-100 p-4 bg-white"
             style="
@@ -127,11 +154,979 @@
      ADD RUANGAN MODAL
     ========================================================== --}}
 
-    <x-admin.master_ruangan_page.add_ruangan_modal />
+    <x-admin.master_ruangan_page.add_ruangan_modal
+        :next-room-code="$nextRoomCode"
+    />
+    <x-admin.master_ruangan_page.edit_ruangan_modal />
+
+    <x-admin.master_ruangan_page.delete_ruangan_modal />
+
+    <x-admin.master_ruangan_page.view_ruangan_modal />
 
    @push('scripts')
 
 <script>
+
+    /*
+        |--------------------------------------------------------------------------
+        | Modal View
+        |--------------------------------------------------------------------------
+        */
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            const qrContainer =
+                document.getElementById(
+                    'viewRoomQrCode'
+                );
+
+
+            const qrText =
+                document.getElementById(
+                    'viewRoomQrCodeText'
+                );
+
+
+            const downloadButton =
+                document.getElementById(
+                    'downloadRoomQrButton'
+                );
+
+
+            if (
+                !qrContainer ||
+                !qrText ||
+                !downloadButton
+            ) {
+                return;
+            }
+
+
+            let currentQrCode =
+                '';
+
+
+            document
+                .querySelectorAll(
+                    '.room-action-view'
+                )
+                .forEach(
+                    function (button) {
+
+                        button.addEventListener(
+                            'click',
+                            async function () {
+
+                                const kodeRuangan =
+                                    button.dataset.kodeRuangan;
+
+
+                                currentQrCode =
+                                    button.dataset.qrCode ||
+                                    kodeRuangan;
+
+
+                                document
+                                    .getElementById(
+                                        'viewRoomCode'
+                                    )
+                                    .textContent =
+                                        kodeRuangan;
+
+
+                                document
+                                    .getElementById(
+                                        'viewRoomName'
+                                    )
+                                    .textContent =
+                                        button.dataset.namaRuangan;
+
+
+                                document
+                                    .getElementById(
+                                        'viewRoomLocation'
+                                    )
+                                    .textContent =
+                                        button.dataset.lokasi;
+
+
+                                document
+                                    .getElementById(
+                                        'viewRoomCoordinate'
+                                    )
+                                    .textContent =
+                                        `${button.dataset.latitude}, ${button.dataset.longitude}`;
+
+
+                                document
+                                    .getElementById(
+                                        'viewRoomCreatedAt'
+                                    )
+                                    .textContent =
+                                        button.dataset.createdAt;
+
+
+                                document
+                                    .getElementById(
+                                        'viewRoomUpdatedAt'
+                                    )
+                                    .textContent =
+                                        button.dataset.updatedAt;
+
+
+                                qrText.textContent =
+                                    currentQrCode;
+
+
+                                qrContainer.innerHTML =
+                                    '';
+
+
+                                const canvas =
+                                    document.createElement(
+                                        'canvas'
+                                    );
+
+
+                                await QRCode.toCanvas(
+                                    canvas,
+                                    currentQrCode,
+                                    {
+                                        width: 220,
+                                        margin: 2
+                                    }
+                                );
+
+
+                                qrContainer.appendChild(
+                                    canvas
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            downloadButton.addEventListener(
+                'click',
+                async function () {
+
+                    if (!currentQrCode) {
+                        return;
+                    }
+
+
+                    const canvas =
+                        document.createElement(
+                            'canvas'
+                        );
+
+
+                    await QRCode.toCanvas(
+                        canvas,
+                        currentQrCode,
+                        {
+                            width: 800,
+                            margin: 3
+                        }
+                    );
+
+
+                    const link =
+                        document.createElement(
+                            'a'
+                        );
+
+
+                    link.download =
+                        `${currentQrCode}.jpg`;
+
+
+                    link.href =
+                        canvas.toDataURL(
+                            'image/jpeg',
+                            0.95
+                        );
+
+
+                    link.click();
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+        |--------------------------------------------------------------------------
+        | Modal Delete
+        |--------------------------------------------------------------------------
+        */
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            const deleteForm =
+                document.getElementById(
+                    'deleteRoomForm'
+                );
+
+
+            const deleteRoomName =
+                document.getElementById(
+                    'deleteRoomName'
+                );
+
+
+            if (
+                !deleteForm ||
+                !deleteRoomName
+            ) {
+                return;
+            }
+
+
+            document
+                .querySelectorAll(
+                    '.room-action-delete'
+                )
+                .forEach(
+                    function (button) {
+
+                        button.addEventListener(
+                            'click',
+                            function () {
+
+                                const roomId =
+                                    button.dataset.roomId;
+
+
+                                const roomName =
+                                    button.dataset.namaRuangan;
+
+
+                                deleteRoomName.textContent =
+                                    roomName;
+
+
+                                deleteForm.action =
+                                    `/admin/master-ruangan/${roomId}`;
+
+                            }
+                        );
+
+                    }
+                );
+
+        }
+    );
+
+    /*
+|--------------------------------------------------------------------------
+| MODAL EDIT RUANGAN
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | ELEMENT
+        |--------------------------------------------------------------------------
+        */
+
+        const editModalElement =
+            document.getElementById(
+                'editRoomModal'
+            );
+
+
+        const editMapElement =
+            document.getElementById(
+                'editRoomMap'
+            );
+
+
+        const editForm =
+            document.getElementById(
+                'editRoomForm'
+            );
+
+
+        const editRoomCode =
+            document.getElementById(
+                'editRoomCode'
+            );
+
+
+        const editRoomName =
+            document.getElementById(
+                'editRoomName'
+            );
+
+
+        const editRoomLocation =
+            document.getElementById(
+                'editRoomLocation'
+            );
+
+
+        const editRoomLatitude =
+            document.getElementById(
+                'editRoomLatitude'
+            );
+
+
+        const editRoomLongitude =
+            document.getElementById(
+                'editRoomLongitude'
+            );
+
+
+        const useCurrentEditLocationButton =
+            document.getElementById(
+                'useCurrentEditRoomLocation'
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI ELEMENT
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            !editModalElement ||
+            !editMapElement ||
+            !editForm ||
+            !editRoomLatitude ||
+            !editRoomLongitude
+        ) {
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MAP STATE
+        |--------------------------------------------------------------------------
+        */
+
+        let editRoomMap =
+            null;
+
+
+        let editRoomMarker =
+            null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ROOM YANG SEDANG DIEDIT
+        |--------------------------------------------------------------------------
+        */
+
+        let currentEditRoom =
+            null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE KOORDINAT
+        |--------------------------------------------------------------------------
+        */
+
+        function updateEditCoordinates(
+            latitude,
+            longitude
+        ) {
+
+            editRoomLatitude.value =
+                Number(
+                    latitude
+                ).toFixed(7);
+
+
+            editRoomLongitude.value =
+                Number(
+                    longitude
+                ).toFixed(7);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SET MARKER POSITION
+        |--------------------------------------------------------------------------
+        */
+
+        function setEditMarkerPosition(
+            latitude,
+            longitude
+        ) {
+
+            if (!editRoomMarker) {
+                return;
+            }
+
+
+            editRoomMarker.setLatLng(
+                [
+                    latitude,
+                    longitude
+                ]
+            );
+
+
+            updateEditCoordinates(
+                latitude,
+                longitude
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | INITIALIZE MAP
+        |--------------------------------------------------------------------------
+        */
+
+        function initializeEditRoomMap(
+            latitude,
+            longitude
+        ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | MAP SUDAH ADA
+            |--------------------------------------------------------------------------
+            */
+
+            if (editRoomMap) {
+
+                editRoomMap.setView(
+                    [
+                        latitude,
+                        longitude
+                    ],
+                    18
+                );
+
+
+                setEditMarkerPosition(
+                    latitude,
+                    longitude
+                );
+
+
+                setTimeout(
+                    function () {
+
+                        editRoomMap.invalidateSize();
+
+                    },
+                    100
+                );
+
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BUAT MAP
+            |--------------------------------------------------------------------------
+            */
+
+            editRoomMap =
+                L.map(
+                    editMapElement
+                ).setView(
+                    [
+                        latitude,
+                        longitude
+                    ],
+                    18
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | OPEN STREET MAP
+            |--------------------------------------------------------------------------
+            */
+
+            L.tileLayer(
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                {
+                    maxZoom: 20,
+
+                    attribution:
+                        '&copy; OpenStreetMap contributors'
+                }
+            ).addTo(
+                editRoomMap
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | MARKER
+            |--------------------------------------------------------------------------
+            */
+
+            editRoomMarker =
+                L.marker(
+                    [
+                        latitude,
+                        longitude
+                    ],
+                    {
+                        draggable: true
+                    }
+                ).addTo(
+                    editRoomMap
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | KOORDINAT AWAL
+            |--------------------------------------------------------------------------
+            */
+
+            updateEditCoordinates(
+                latitude,
+                longitude
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | MARKER DIGESER
+            |--------------------------------------------------------------------------
+            */
+
+            editRoomMarker.on(
+                'dragend',
+                function () {
+
+                    const position =
+                        editRoomMarker.getLatLng();
+
+
+                    updateEditCoordinates(
+                        position.lat,
+                        position.lng
+                    );
+
+                }
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | MAP DIKLIK
+            |--------------------------------------------------------------------------
+            */
+
+            editRoomMap.on(
+                'click',
+                function (event) {
+
+                    const latitude =
+                        event.latlng.lat;
+
+
+                    const longitude =
+                        event.latlng.lng;
+
+
+                    setEditMarkerPosition(
+                        latitude,
+                        longitude
+                    );
+
+                }
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET CURRENT LOCATION
+        |--------------------------------------------------------------------------
+        */
+
+        function getCurrentEditLocation() {
+
+            if (
+                useCurrentEditLocationButton
+            ) {
+
+                useCurrentEditLocationButton.disabled =
+                    true;
+
+
+                useCurrentEditLocationButton.style.opacity =
+                    '0.6';
+
+
+                useCurrentEditLocationButton.style.cursor =
+                    'wait';
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BROWSER TIDAK MENDUKUNG GEOLOCATION
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                !navigator.geolocation
+            ) {
+
+                console.warn(
+                    'Browser tidak mendukung Geolocation API.'
+                );
+
+
+                enableCurrentLocationButton();
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | REQUEST LOKASI
+            |--------------------------------------------------------------------------
+            */
+
+            navigator.geolocation.getCurrentPosition(
+
+                function (position) {
+
+                    const latitude =
+                        position.coords.latitude;
+
+
+                    const longitude =
+                        position.coords.longitude;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | PINDAHKAN MAP
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (editRoomMap) {
+
+                        editRoomMap.setView(
+                            [
+                                latitude,
+                                longitude
+                            ],
+                            18
+                        );
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | PINDAHKAN MARKER
+                    |--------------------------------------------------------------------------
+                    */
+
+                    setEditMarkerPosition(
+                        latitude,
+                        longitude
+                    );
+
+
+                    enableCurrentLocationButton();
+
+                },
+
+
+                function (error) {
+
+                    console.warn(
+                        'Lokasi perangkat tidak dapat diperoleh:',
+                        error.message
+                    );
+
+
+                    enableCurrentLocationButton();
+
+                },
+
+
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ENABLE BUTTON
+        |--------------------------------------------------------------------------
+        */
+
+        function enableCurrentLocationButton() {
+
+            if (
+                useCurrentEditLocationButton
+            ) {
+
+                useCurrentEditLocationButton.disabled =
+                    false;
+
+
+                useCurrentEditLocationButton.style.opacity =
+                    '1';
+
+
+                useCurrentEditLocationButton.style.cursor =
+                    'pointer';
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUTTON USE CURRENT LOCATION
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            useCurrentEditLocationButton
+        ) {
+
+            useCurrentEditLocationButton.addEventListener(
+                'click',
+                function () {
+
+                    getCurrentEditLocation();
+
+                }
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUTTON EDIT
+        |--------------------------------------------------------------------------
+        */
+
+        document
+            .querySelectorAll(
+                '.room-action-edit'
+            )
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | AMBIL DATA RUANGAN
+                            |--------------------------------------------------------------------------
+                            */
+
+                            const roomId =
+                                button.dataset.roomId;
+
+
+                            const kodeRuangan =
+                                button.dataset.kodeRuangan || '';
+
+
+                            const namaRuangan =
+                                button.dataset.namaRuangan || '';
+
+
+                            const lokasi =
+                                button.dataset.lokasi || '';
+
+
+                            const latitude =
+                                parseFloat(
+                                    button.dataset.latitude
+                                );
+
+
+                            const longitude =
+                                parseFloat(
+                                    button.dataset.longitude
+                                );
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | SIMPAN ROOM AKTIF
+                            |--------------------------------------------------------------------------
+                            */
+
+                            currentEditRoom = {
+                                id: roomId,
+                                latitude: latitude,
+                                longitude: longitude
+                            };
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | ISI FORM
+                            |--------------------------------------------------------------------------
+                            */
+
+                            editRoomCode.value =
+                                kodeRuangan;
+
+
+                            editRoomName.value =
+                                namaRuangan;
+
+
+                            editRoomLocation.value =
+                                lokasi;
+
+
+                            updateEditCoordinates(
+                                latitude,
+                                longitude
+                            );
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | FORM ACTION
+                            |--------------------------------------------------------------------------
+                            */
+
+                            editForm.action =
+                                `/admin/master-ruangan/${roomId}`;
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MODAL OPEN
+        |--------------------------------------------------------------------------
+        */
+
+        editModalElement.addEventListener(
+            'shown.bs.modal',
+            function () {
+
+                if (
+                    !currentEditRoom
+                ) {
+                    return;
+                }
+
+
+                initializeEditRoomMap(
+                    currentEditRoom.latitude,
+                    currentEditRoom.longitude
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | FIX LEAFLET SAAT MODAL DIBUKA
+                |--------------------------------------------------------------------------
+                */
+
+                setTimeout(
+                    function () {
+
+                        if (
+                            editRoomMap
+                        ) {
+
+                            editRoomMap.invalidateSize();
+
+
+                            editRoomMap.setView(
+                                [
+                                    parseFloat(
+                                        editRoomLatitude.value
+                                    ),
+                                    parseFloat(
+                                        editRoomLongitude.value
+                                    )
+                                ],
+                                18
+                            );
+
+                        }
+
+                    },
+                    100
+                );
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MODAL CLOSE
+        |--------------------------------------------------------------------------
+        */
+
+        editModalElement.addEventListener(
+            'hidden.bs.modal',
+            function () {
+
+                currentEditRoom =
+                    null;
+
+
+                enableCurrentLocationButton();
+
+            }
+        );
+
+    }
+
+);
 
 document.addEventListener(
     'DOMContentLoaded',
@@ -218,41 +1213,6 @@ document.addEventListener(
 
         let roomMarker =
             null;
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | GENERATE PREVIEW KODE RUANGAN
-        |--------------------------------------------------------------------------
-        |
-        | FRONTEND SAJA.
-        | Nomor final tetap akan dibuat oleh backend.
-        |
-        */
-
-        function generateRoomCode() {
-
-            const existingRows =
-                document.querySelectorAll(
-                    '[data-room-id]'
-                );
-
-
-            const nextNumber =
-                existingRows.length + 1;
-
-
-            codeInput.value =
-                'RNG-' +
-                String(
-                    nextNumber
-                ).padStart(
-                    3,
-                    '0'
-                );
-
-        }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -689,8 +1649,6 @@ document.addEventListener(
         modalElement.addEventListener(
             'shown.bs.modal',
             function () {
-
-                generateRoomCode();
 
                 initializeRoomMap();
 

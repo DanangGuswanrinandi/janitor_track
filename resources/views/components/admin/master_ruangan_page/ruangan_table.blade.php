@@ -1,97 +1,4 @@
 {{-- =========================================================
-     RUANGAN TABLE
-========================================================== --}}
-
-@php
-
-    /*
-    |--------------------------------------------------------------------------
-    | DATA DUMMY SEMENTARA
-    |--------------------------------------------------------------------------
-    | Nanti bagian ini tinggal diganti dengan data dari database.
-    */
-
-    $roomData = collect([
-
-        (object) [
-            'id' => 1,
-            'kode_ruangan' => 'RNG-001',
-            'nama_ruangan' => 'Ruang Kepala Sekolah',
-            'lokasi' => 'Lantai 1',
-            'latitude' => '-7.155123',
-            'longitude' => '112.654321',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-
-        (object) [
-            'id' => 2,
-            'kode_ruangan' => 'RNG-002',
-            'nama_ruangan' => 'Ruang Guru',
-            'lokasi' => 'Lantai 1',
-            'latitude' => '-7.155234',
-            'longitude' => '112.654432',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-
-        (object) [
-            'id' => 3,
-            'kode_ruangan' => 'RNG-003',
-            'nama_ruangan' => 'Laboratorium Komputer',
-            'lokasi' => 'Lantai 1',
-            'latitude' => '-7.155345',
-            'longitude' => '112.654543',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-
-        (object) [
-            'id' => 4,
-            'kode_ruangan' => 'RNG-004',
-            'nama_ruangan' => 'Ruang Kelas 1A',
-            'lokasi' => 'Lantai 2',
-            'latitude' => '-7.155456',
-            'longitude' => '112.654654',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-
-        (object) [
-            'id' => 5,
-            'kode_ruangan' => 'RNG-005',
-            'nama_ruangan' => 'Ruang Kelas 1B',
-            'lokasi' => 'Lantai 2',
-            'latitude' => '-7.155567',
-            'longitude' => '112.654765',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-
-    ]);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PAGINATION DUMMY SEMENTARA
-    |--------------------------------------------------------------------------
-    */
-
-    $rooms = new \Illuminate\Pagination\LengthAwarePaginator(
-        $roomData,
-        $roomData->count(),
-        20,
-        1,
-        [
-            'path' => request()->url(),
-            'query' => request()->query(),
-        ]
-    );
-
-@endphp
-
-
-{{-- =========================================================
      REUSABLE TABLE
 ========================================================== --}}
 
@@ -421,8 +328,19 @@
                                 justify-content-center
                                 room-action-edit
                             "
+                            data-bs-toggle="modal"
+                            data-bs-target="#editRoomModal"
+
+                            data-room-id="{{ $room->id }}"
+                            data-kode-ruangan="{{ $room->kode_ruangan }}"
+                            data-nama-ruangan="{{ $room->nama_ruangan }}"
+                            data-lokasi="{{ $room->lokasi }}"
+                            data-latitude="{{ $room->latitude }}"
+                            data-longitude="{{ $room->longitude }}"
+
                             title="Edit ruangan"
                             aria-label="Edit ruangan"
+
                             style="
                                 width: 34px;
                                 height: 34px;
@@ -430,13 +348,11 @@
                                 border: 1px solid #dfe5ee;
                                 border-radius: 8px;
                                 background: #ffffff;
-                                color: #3478f6;
+                                color: #f5c542;
                                 font-size: 14px;
                             "
                         >
-
                             <i class="bi bi-pencil"></i>
-
                         </button>
 
 
@@ -454,8 +370,16 @@
                                 justify-content-center
                                 room-action-delete
                             "
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteRoomModal"
+
+                            data-room-id="{{ $room->id }}"
+                            data-nama-ruangan="{{ $room->nama_ruangan }}"
+                            data-kode-ruangan="{{ $room->kode_ruangan }}"
+
                             title="Hapus ruangan"
                             aria-label="Hapus ruangan"
+
                             style="
                                 width: 34px;
                                 height: 34px;
@@ -467,9 +391,51 @@
                                 font-size: 14px;
                             "
                         >
-
                             <i class="bi bi-trash"></i>
+                        </button>
 
+                        {{-- =================================================
+                                VIEW
+                        ================================================== --}}
+
+                        <button
+                            type="button"
+                            class="
+                                btn
+                                btn-sm
+                                d-inline-flex
+                                align-items-center
+                                justify-content-center
+                                room-action-view
+                            "
+                            data-bs-toggle="modal"
+                            data-bs-target="#viewRoomModal"
+                                            
+                            data-room-id="{{ $room->id }}"
+                            data-kode-ruangan="{{ $room->kode_ruangan }}"
+                            data-qr-code="{{ $room->qr_code }}"
+                            data-nama-ruangan="{{ $room->nama_ruangan }}"
+                            data-lokasi="{{ $room->lokasi }}"
+                            data-latitude="{{ $room->latitude }}"
+                            data-longitude="{{ $room->longitude }}"
+                            data-created-at="{{ $room->created_at?->format('d M Y, H:i') }}"
+                            data-updated-at="{{ $room->updated_at?->format('d M Y, H:i') }}"
+                                            
+                            title="Lihat ruangan"
+                            aria-label="Lihat ruangan"
+                                            
+                            style="
+                                width: 34px;
+                                height: 34px;
+                                padding: 0;
+                                border: 1px solid #f1d9dc;
+                                border-radius: 8px;
+                                background: #ffffff;
+                                color: #2e39db;
+                                font-size: 14px;
+                            "
+                        >
+                            <i class="bi bi-eye"></i>
                         </button>
 
                     </div>
@@ -516,8 +482,8 @@
     */
 
     .room-action-edit:hover {
-        background: #f5f8ff !important;
-        border-color: #cbdcff !important;
+        background: #fff9e6 !important;
+        border-color: #f5df9a !important;
     }
 
 
@@ -530,6 +496,17 @@
     .room-action-delete:hover {
         background: #fff5f5 !important;
         border-color: #f1c5ca !important;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | VIEW BUTTON
+    |--------------------------------------------------------------------------
+    */
+
+    .room-action-view:hover {
+        background: #f5f8ff !important;
+        border-color: #cbdcff !important;
     }
 
 </style>

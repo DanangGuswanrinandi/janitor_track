@@ -1,15 +1,12 @@
-@props([
-    'nextRoomCode'
-])
 {{-- =========================================================
-     ADD RUANGAN MODAL
+     EDIT RUANGAN MODAL
 ========================================================== --}}
 
 <div
     class="modal fade"
-    id="addRoomModal"
+    id="editRoomModal"
     tabindex="-1"
-    aria-labelledby="addRoomModalLabel"
+    aria-labelledby="editRoomModalLabel"
     aria-hidden="true"
 >
 
@@ -25,12 +22,13 @@
         >
 
             <form
-                id="addRoomForm"
+                id="editRoomForm"
                 method="POST"
-                action="{{ route('admin.master-ruangan.store') }}"
             >
 
                 @csrf
+
+                @method('PUT')
 
 
                 {{-- =================================================
@@ -48,14 +46,14 @@
                     <div>
 
                         <h5
-                            id="addRoomModalLabel"
+                            id="editRoomModalLabel"
                             class="m-0 fw-semibold"
                             style="
                                 color: #20252b;
                                 font-size: 18px;
                             "
                         >
-                            Tambah Ruangan
+                            Edit Ruangan
                         </h5>
 
                         <p
@@ -65,7 +63,7 @@
                                 font-size: 12px;
                             "
                         >
-                            Tambahkan data ruangan baru ke sistem CleanTrack.
+                            Perbarui data ruangan dan lokasi ruangan.
                         </p>
 
                     </div>
@@ -99,7 +97,7 @@
                     <div class="mb-3">
 
                         <label
-                            for="addRoomCode"
+                            for="editRoomCode"
                             class="form-label mb-2 fw-semibold"
                             style="
                                 color: #3c4450;
@@ -111,10 +109,8 @@
 
                         <input
                             type="text"
-                            id="addRoomCode"
-                            name="kode_ruangan"
+                            id="editRoomCode"
                             class="form-control"
-                            value="{{ $nextRoomCode }}"
                             readonly
                             style="
                                 min-height: 46px;
@@ -135,7 +131,7 @@
                                 font-size: 11px;
                             "
                         >
-                            Kode ruangan akan dibuat otomatis oleh sistem.
+                            Kode ruangan tidak dapat diubah.
                         </div>
 
                     </div>
@@ -148,7 +144,7 @@
                     <div class="mb-3">
 
                         <label
-                            for="addRoomName"
+                            for="editRoomName"
                             class="form-label mb-2 fw-semibold"
                             style="
                                 color: #3c4450;
@@ -160,7 +156,7 @@
 
                         <input
                             type="text"
-                            id="addRoomName"
+                            id="editRoomName"
                             name="nama_ruangan"
                             class="form-control"
                             placeholder="Masukkan nama ruangan"
@@ -186,7 +182,7 @@
                     <div class="mb-3">
 
                         <label
-                            for="addRoomLocation"
+                            for="editRoomLocation"
                             class="form-label mb-2 fw-semibold"
                             style="
                                 color: #3c4450;
@@ -198,7 +194,7 @@
 
                         <input
                             type="text"
-                            id="addRoomLocation"
+                            id="editRoomLocation"
                             name="lokasi"
                             class="form-control"
                             placeholder="Contoh: Lantai 1"
@@ -239,7 +235,7 @@
                         ================================================== --}}
 
                         <div
-                            id="addRoomMap"
+                            id="editRoomMap"
                             style="
                                 width: 100%;
                                 height: 320px;
@@ -249,17 +245,18 @@
                             "
                         ></div>
 
+
                         {{-- =================================================
                              USE CURRENT LOCATION BUTTON
                         ================================================== --}}
-                                            
+
                         <div
                             class="d-flex justify-content-end mt-2"
                         >
-                                            
+
                             <button
                                 type="button"
-                                id="useCurrentRoomLocation"
+                                id="useCurrentEditRoomLocation"
                                 class="btn d-inline-flex align-items-center gap-2 fw-semibold"
                                 style="
                                     min-height: 38px;
@@ -271,15 +268,15 @@
                                     font-size: 12px;
                                 "
                             >
-                                            
+
                                 <i class="bi bi-crosshair"></i>
-                                            
+
                                 <span>
                                     Gunakan Lokasi Saya Sekarang
                                 </span>
-                            
+
                             </button>
-                        
+
                         </div>
 
 
@@ -292,7 +289,7 @@
                             <div class="col-md-6">
 
                                 <label
-                                    for="addRoomLatitude"
+                                    for="editRoomLatitude"
                                     class="form-label mb-1"
                                     style="
                                         color: #6c7583;
@@ -304,10 +301,11 @@
 
                                 <input
                                     type="text"
-                                    id="addRoomLatitude"
+                                    id="editRoomLatitude"
                                     name="latitude"
                                     class="form-control"
                                     readonly
+                                    required
                                     style="
                                         min-height: 42px;
                                         border-radius: 8px;
@@ -322,7 +320,7 @@
                             <div class="col-md-6">
 
                                 <label
-                                    for="addRoomLongitude"
+                                    for="editRoomLongitude"
                                     class="form-label mb-1"
                                     style="
                                         color: #6c7583;
@@ -334,10 +332,11 @@
 
                                 <input
                                     type="text"
-                                    id="addRoomLongitude"
+                                    id="editRoomLongitude"
                                     name="longitude"
                                     class="form-control"
                                     readonly
+                                    required
                                     style="
                                         min-height: 42px;
                                         border-radius: 8px;
@@ -358,7 +357,7 @@
                                 font-size: 11px;
                             "
                         >
-                            Geser marker pada peta untuk menentukan titik lokasi ruangan.
+                            Geser marker pada peta atau klik lokasi pada peta untuk mengubah titik lokasi ruangan.
                         </div>
 
                     </div>
@@ -408,8 +407,11 @@
                             font-size: 13px;
                         "
                     >
-                        <i class="bi bi-plus-lg me-1"></i>
-                        Tambah Ruangan
+
+                        <i class="bi bi-check-lg me-1"></i>
+
+                        Simpan Perubahan
+
                     </button>
 
                 </div>
