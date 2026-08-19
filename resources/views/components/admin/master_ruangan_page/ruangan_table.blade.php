@@ -8,7 +8,7 @@
     checkbox-class="room-checkbox"
     select-all-id="selectAllRooms"
     delete-button-id="deleteSelectedRoomsButton"
-    delete-modal-id=""
+    delete-modal-id="deleteSelectedRoomsModal"
     total-label="ruangan"
     min-width="1100px"
 >
@@ -410,7 +410,7 @@
                             "
                             data-bs-toggle="modal"
                             data-bs-target="#viewRoomModal"
-                                            
+
                             data-room-id="{{ $room->id }}"
                             data-kode-ruangan="{{ $room->kode_ruangan }}"
                             data-qr-code="{{ $room->qr_code }}"
@@ -420,10 +420,10 @@
                             data-longitude="{{ $room->longitude }}"
                             data-created-at="{{ $room->created_at?->format('d M Y, H:i') }}"
                             data-updated-at="{{ $room->updated_at?->format('d M Y, H:i') }}"
-                                            
+
                             title="Lihat ruangan"
                             aria-label="Lihat ruangan"
-                                            
+
                             style="
                                 width: 34px;
                                 height: 34px;

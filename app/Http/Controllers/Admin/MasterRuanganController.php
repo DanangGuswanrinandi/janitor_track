@@ -83,22 +83,44 @@ class MasterRuanganController extends Controller
             );
 
     }
+
+    public function bulkDestroy(
+        Request $request
+    ): RedirectResponse {
+
+        $this->masterRuanganService
+            ->deleteSelectedRooms(
+                $request
+            );
+
+
+        return redirect()
+            ->route('admin.master-ruangan')
+            ->with(
+                'success',
+                'Ruangan yang dipilih berhasil dihapus.'
+            );
+
+    }
+
     public function destroy(
         MasterRuangan $masterRuangan
     ): RedirectResponse {
-    
+
         $this->masterRuanganService
             ->deleteRoom(
                 $masterRuangan
             );
-    
-    
+
+
         return redirect()
             ->route('admin.master-ruangan')
             ->with(
                 'success',
                 'Ruangan berhasil dihapus.'
             );
-    
+
     }
+
+
 }

@@ -47,30 +47,37 @@
 
         </div>
 
-                {{-- =====================================================
+        {{-- =====================================================
              SUCCESS ALERT
+        ====================================================== --}}
+
+        <x-alert.success />
+
+
+        {{-- =====================================================
+             CLEAR SELECTED ROOMS AFTER SUCCESS
         ====================================================== --}}
 
         @if (session('success'))
 
-            <div
-                class="alert d-flex align-items-center gap-2 mb-4"
-                style="
-                    border: 1px solid #cfe2ff;
-                    border-radius: 10px;
-                    background: #eaf1ff;
-                    color: #3478f6;
-                    font-size: 13px;
-                "
-            >
+            @push('scripts')
 
-                <i class="bi bi-check-circle-fill"></i>
+                <script>
 
-                <span>
-                    {{ session('success') }}
-                </span>
+                    document.addEventListener(
+                        'DOMContentLoaded',
+                        function () {
 
-            </div>
+                            sessionStorage.removeItem(
+                                'cleantrack_selected_room_ids'
+                            );
+
+                        }
+                    );
+
+                </script>
+
+            @endpush
 
         @endif
 
@@ -132,7 +139,7 @@
                     <span>
                         Tambah Ruangan
                     </span>
-                
+
                 </button>
 
             </div>
@@ -142,14 +149,14 @@
         ====================================================== --}}
 
         @include('components.admin.master_ruangan_page.ruangan_table')
-    
-    </div>
-
-
-        
 
     </div>
-    
+
+
+
+
+    </div>
+
     {{-- =========================================================
      ADD RUANGAN MODAL
     ========================================================== --}}
@@ -162,6 +169,8 @@
     <x-admin.master_ruangan_page.delete_ruangan_modal />
 
     <x-admin.master_ruangan_page.view_ruangan_modal />
+
+    <x-admin.master_ruangan_page.delete_selected_ruangan_modal />
 
    @push('scripts')
 
@@ -1433,16 +1442,16 @@ document.addEventListener(
             if (
             useCurrentLocationButton
             ) {
-            
+
                 useCurrentLocationButton.disabled =
                     true;
-            
+
                 useCurrentLocationButton.style.opacity =
                     '0.6';
-            
+
                 useCurrentLocationButton.style.cursor =
                     'wait';
-            
+
             }
 
             /*
@@ -1479,23 +1488,23 @@ document.addEventListener(
                 */
 
                 function (position) {
-                
+
                     const latitude =
                         position.coords.latitude;
-                
-                
+
+
                     const longitude =
                         position.coords.longitude;
-                
-                
+
+
                     /*
                     |--------------------------------------------------------------------------
                     | PINDAHKAN MAP
                     |--------------------------------------------------------------------------
                     */
-                
+
                     if (roomMap) {
-                    
+
                         roomMap.setView(
                             [
                                 latitude,
@@ -1503,86 +1512,86 @@ document.addEventListener(
                             ],
                             18
                         );
-                    
+
                     }
-                
-                
+
+
                     /*
                     |--------------------------------------------------------------------------
                     | PINDAHKAN MARKER
                     |--------------------------------------------------------------------------
                     */
-                
+
                     setMarkerPosition(
                         latitude,
                         longitude
                     );
-                
-                
+
+
                     /*
                     |--------------------------------------------------------------------------
                     | AKTIFKAN KEMBALI BUTTON
                     |--------------------------------------------------------------------------
                     */
-                
+
                     if (useCurrentLocationButton) {
-                    
+
                         useCurrentLocationButton.disabled =
                             false;
-                    
+
                         useCurrentLocationButton.style.opacity =
                             '1';
-                    
+
                         useCurrentLocationButton.style.cursor =
                             'pointer';
-                    
+
                     }
-                
+
                 },
-            
-            
+
+
                 /*
                 |--------------------------------------------------------------------------
                 | GAGAL
                 |--------------------------------------------------------------------------
                 */
-            
+
                 function (error) {
-                
+
                     console.warn(
                         'Lokasi perangkat tidak dapat diperoleh:',
                         error.message
                     );
-                
-                
+
+
                     /*
                     |--------------------------------------------------------------------------
                     | AKTIFKAN KEMBALI BUTTON
                     |--------------------------------------------------------------------------
                     */
-                
+
                     if (useCurrentLocationButton) {
-                    
+
                         useCurrentLocationButton.disabled =
                             false;
-                    
+
                         useCurrentLocationButton.style.opacity =
                             '1';
-                    
+
                         useCurrentLocationButton.style.cursor =
                             'pointer';
-                    
+
                     }
-                
-                
+
+
                     /*
                     |--------------------------------------------------------------------------
                     | KEMBALI KE LOKASI DEFAULT
                     |--------------------------------------------------------------------------
                     */
-                
+
                     if (roomMap) {
-                    
+
                         roomMap.setView(
                             [
                                 defaultLatitude,
@@ -1590,32 +1599,32 @@ document.addEventListener(
                             ],
                             17
                         );
-                    
+
                     }
-                
-                
+
+
                     setMarkerPosition(
                         defaultLatitude,
                         defaultLongitude
                     );
-                
+
                 },
-            
-            
+
+
                 /*
                 |--------------------------------------------------------------------------
                 | OPTIONS
                 |--------------------------------------------------------------------------
                 */
-            
+
                 {
                     enableHighAccuracy: true,
-                
+
                     timeout: 10000,
-                
+
                     maximumAge: 0
                 }
-            
+
             );
 
         }
@@ -1627,16 +1636,16 @@ document.addEventListener(
         */
 
         if (useCurrentLocationButton) {
-        
+
             useCurrentLocationButton.addEventListener(
                 'click',
                 function () {
-                
+
                     getCurrentLocation();
-                
+
                 }
             );
-            
+
         }
 
 

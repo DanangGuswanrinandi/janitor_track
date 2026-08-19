@@ -268,4 +268,35 @@ class MasterRuanganService
         $room->delete();
 
     }
+
+    /**
+     * Menghapus beberapa ruangan sekaligus.
+     */
+    public function deleteSelectedRooms(
+        Request $request
+    ): void {
+    
+        $validated =
+            $request->validate([
+                'room_ids' => [
+                    'required',
+                    'array',
+                    'min:1',
+                ],
+    
+                'room_ids.*' => [
+                    'integer',
+                    'exists:master_ruangan,id',
+                ],
+            ]);
+    
+    
+        MasterRuangan::query()
+            ->whereIn(
+                'id',
+                $validated['room_ids']
+            )
+            ->delete();
+    
+    }
 }

@@ -97,7 +97,7 @@ Route::middleware('auth')->group(function () {
     )->name(
         'admin.master-ruangan.store'
     );
-    
+
     Route::put(
         '/admin/master-ruangan/{masterRuangan}',
         [
@@ -106,6 +106,16 @@ Route::middleware('auth')->group(function () {
         ]
     )->name(
         'admin.master-ruangan.update'
+    );
+
+    Route::delete(
+        '/admin/master-ruangan/bulk-destroy',
+        [
+            MasterRuanganController::class,
+            'bulkDestroy'
+        ]
+    )->name(
+        'admin.master-ruangan.bulk-destroy'
     );
 
     Route::delete(
