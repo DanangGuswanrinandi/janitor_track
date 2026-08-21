@@ -106,63 +106,63 @@
             box-sizing: border-box;
         "
     >
-    
+
         @php
-    
+
             $userMenus = [
-    
+
                 [
                     'label' => 'Dashboard',
                     'icon' => 'bi-grid-1x2-fill',
                     'route' => 'user.dashboard',
                     'active' => 'user.dashboard',
                 ],
-    
+
                 [
-                    'label' => 'Laporan',
-                    'icon' => 'bi-clipboard2-data',
-                    'route' => '#',
-                    'active' => null,
+                    'label' => 'Buat Laporan',
+                    'icon' => 'bi bi-file-earmark-plus',
+                    'route' => 'user.buat-laporan',
+                    'active' => 'user.buat-laporan',
                 ],
-    
+
                 [
                     'label' => 'Janitor',
                     'icon' => 'bi-person-badge',
                     'route' => '#',
                     'active' => null,
                 ],
-    
+
                 [
                     'label' => 'Jadwal',
                     'icon' => 'bi-calendar3',
                     'route' => '#',
                     'active' => null,
                 ],
-    
+
                 [
                     'label' => 'Pengaturan',
                     'icon' => 'bi-gear',
                     'route' => '#',
                     'active' => null,
                 ],
-    
+
             ];
-    
+
         @endphp
-    
-    
+
+
         @foreach ($userMenus as $menu)
-    
+
             @php
-    
+
                 $isActive =
                     $menu['active']
                         ? request()->routeIs($menu['active'])
                         : false;
-    
+
             @endphp
-    
-    
+
+
             <a
                 href="{{ $menu['route'] === '#'
                     ? '#'
@@ -190,7 +190,7 @@
                         color 0.2s ease;
                 "
             >
-    
+
                 <i
                     class="bi {{ $menu['icon'] }} flex-shrink-0"
                     style="
@@ -198,16 +198,16 @@
                         font-size: 16px;
                     "
                 ></i>
-    
-    
+
+
                 <span>
                     {{ $menu['label'] }}
                 </span>
-            
+
             </a>
-        
+
         @endforeach
-        
+
     </nav>
 
 

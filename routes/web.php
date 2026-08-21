@@ -43,7 +43,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::middleware('auth')->group(function () {
 
 
-/*
+    /*
     |--------------------------------------------------------------------------
     | User Dashboard
     |--------------------------------------------------------------------------
@@ -56,6 +56,20 @@ Route::middleware('auth')->group(function () {
         );
 
     })->name('user.dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Buat Laporan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/user/buat-laporan', function () {
+
+        return view(
+            'pages.users.buat_laporan_page'
+        );
+
+    })->name('user.buat-laporan');
 
     /*
     |--------------------------------------------------------------------------
