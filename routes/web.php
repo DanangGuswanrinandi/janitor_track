@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\MasterRuanganController;
+use App\Http\Controllers\User\LaporanController;
+use App\Http\Controllers\User\LaporanJanitorController;
 
 
 /*
@@ -59,6 +61,22 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Lihat Laporan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/user/lihat_laporan',
+        [
+            LaporanController::class,
+            'index'
+        ]
+    )->name(
+        'user.lihat-laporan'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
     | Buat Laporan
     |--------------------------------------------------------------------------
     */
@@ -70,6 +88,33 @@ Route::middleware('auth')->group(function () {
         );
 
     })->name('user.buat-laporan');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Laporan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/user/laporan/{kode_ruangan}',
+        [
+            LaporanController::class,
+            'create'
+        ]
+    )->name(
+        'user.laporan.create'
+    );
+
+
+    Route::post(
+        '/user/laporan/{kode_ruangan}',
+        [
+            LaporanJanitorController::class,
+            'store'
+        ]
+    )->name(
+        'user.laporan.store'
+    );
 
     /*
     |--------------------------------------------------------------------------

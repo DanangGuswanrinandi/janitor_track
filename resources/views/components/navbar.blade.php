@@ -176,14 +176,115 @@
     }
 
     @media (max-width: 575.98px) {
-        header {
-            height: 66px !important;
-            padding-left: 16px !important;
-            padding-right: 16px !important;
-        }
 
-        .navbar-user-info {
-            display: none !important;
-        }
+    header {
+        height: 66px !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LEFT NAVBAR
+    |--------------------------------------------------------------------------
+    */
+
+    header > div:first-child {
+        min-width: 0 !important;
+        flex: 1 1 auto;
+        gap: 10px !important;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAGE TITLE CONTAINER
+    |--------------------------------------------------------------------------
+    */
+
+    header > div:first-child > div:last-child {
+        min-width: 0 !important;
+        flex: 1 1 auto;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAGE TITLE
+    |--------------------------------------------------------------------------
+    */
+
+    header h1 {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        font-size: 16px !important;
+        line-height: 1.3 !important;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAGE SUBTITLE
+    |--------------------------------------------------------------------------
+    */
+
+    header p {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        font-size: 11px !important;
+        line-height: 1.3 !important;
+        margin-top: 2px !important;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MOBILE MENU
+    |--------------------------------------------------------------------------
+    */
+
+    #sidebarToggle {
+        flex-shrink: 0;
+        width: 38px !important;
+        height: 38px !important;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | USER AREA
+    |--------------------------------------------------------------------------
+    */
+
+    .navbar-user-info {
+        display: none !important;
+    }
+
+
+    #userDropdownToggle {
+        flex-shrink: 0;
+        gap: 5px !important;
+        padding: 4px !important;
+    }
+
+
+    #userDropdownToggle > div {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+
+    #userDropdownToggle > i {
+        margin-left: 0 !important;
+        font-size: 10px !important;
+    }
+
+}
 </style>

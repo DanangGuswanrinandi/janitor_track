@@ -126,10 +126,10 @@
                 ],
 
                 [
-                    'label' => 'Janitor',
-                    'icon' => 'bi-person-badge',
-                    'route' => '#',
-                    'active' => null,
+                    'label' => 'Lihat Laporan',
+                    'icon' => 'bi bi-file-earmark-text',
+                    'route' => 'user.lihat-laporan',
+                    'active' => 'user.lihat-laporan',
                 ],
 
                 [

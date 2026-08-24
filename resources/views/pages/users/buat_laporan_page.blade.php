@@ -10,6 +10,12 @@
 
     <div class="w-100">
 
+         {{-- =====================================================
+             SUCCESS ALERT
+        ====================================================== --}}
+
+        <x-alert.success />
+
         {{-- =====================================================
              PAGE CARD
         ====================================================== --}}
@@ -98,9 +104,9 @@
              LIHAT LAPORAN
         ====================================================== --}}
 
-        <button
-            type="button"
-            class="btn w-100 mt-3 fw-semibold d-flex align-items-center justify-content-center gap-2"
+        <a
+            href="{{ route('user.lihat-laporan') }}"
+            class="btn w-100 mt-3 fw-semibold d-flex align-items-center justify-content-center gap-2 text-decoration-none"
             style="
                 min-height: 46px;
                 padding: 10px 16px;
@@ -119,7 +125,7 @@
                 Lihat Laporan
             </span>
 
-        </button>
+        </a>
 
     </div>
 
@@ -236,31 +242,61 @@
                                     );
 
 
-                                    resultElement.classList.remove(
-                                        'd-none'
-                                    );
+                                    const kodeRuangan =
+                                        decodedText.trim();
 
 
-                                    resultValueElement.textContent =
-                                        decodedText;
+                                    /*
+                                    |--------------------------------------------------------------------------
+                                    | VALIDASI FORMAT QR
+                                    |--------------------------------------------------------------------------
+                                    */
+
+                                    if (
+                                        !/^RNG-\d{3}$/.test(
+                                            kodeRuangan
+                                        )
+                                    ) {
+
+                                        statusElement.innerHTML =
+                                            `
+                                                <i
+                                                    class="bi bi-exclamation-circle-fill"
+                                                    style="color: #dc3545;"
+                                                ></i>
+
+                                                <span
+                                                    style="color: #dc3545;"
+                                                >
+                                                    QR Code ruangan tidak valid.
+                                                </span>
+                                            `;
+
+                                        return;
+
+                                    }
 
 
-                                    statusElement.innerHTML =
-                                        `
-                                            <i
-                                                class="bi bi-check-circle-fill"
-                                                style="color: #28a745;"
-                                            ></i>
-
-                                            <span
-                                                style="color: #28a745;"
-                                            >
-                                                QR Code berhasil dipindai.
-                                            </span>
-                                        `;
-
+                                    /*
+                                    |--------------------------------------------------------------------------
+                                    | STOP CAMERA
+                                    |--------------------------------------------------------------------------
+                                    */
 
                                     stopScanner();
+
+
+                                    /*
+                                    |--------------------------------------------------------------------------
+                                    | REDIRECT
+                                    |--------------------------------------------------------------------------
+                                    */
+
+                                    window.location.href =
+                                        "{{ url('/user/laporan') }}/" +
+                                        encodeURIComponent(
+                                            kodeRuangan
+                                        );
 
                                 },
 
