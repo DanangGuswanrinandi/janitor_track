@@ -11,13 +11,14 @@ class LaporanJanitor extends Model
 {
     protected $table = 'laporan_janitor';
 
-    protected $fillable = [
+        protected $fillable = [
         'ruangan_id',
         'user_id',
         'foto_kondisi',
         'latitude',
         'longitude',
         'keterangan',
+        'status',
     ];
 
     public function ruangan(): BelongsTo

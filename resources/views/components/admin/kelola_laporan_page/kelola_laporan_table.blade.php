@@ -1,23 +1,25 @@
 {{-- =========================================================
-     LAPORAN TABLE
+     KELOLA LAPORAN TABLE
 ========================================================== --}}
 
 <x-admin.table
     :items="$laporans"
-    storage-key="cleantrack_laporan"
-    checkbox-class="laporan-checkbox"
-    select-all-id="selectAllLaporan"
-    delete-button-id="deleteSelectedLaporanButton"
-    delete-modal-id="deleteSelectedLaporanModal"
+    storage-key="cleantrack_kelola_laporan"
+    checkbox-class="kelola-laporan-checkbox"
+    select-all-id="selectAllKelolaLaporan"
+    delete-button-id="deleteSelectedKelolaLaporanButton"
+    delete-modal-id="deleteSelectedKelolaLaporanModal"
     total-label="laporan"
     min-width="1100px"
 >
+
 
     {{-- =====================================================
          TABLE HEADER
     ====================================================== --}}
 
     <x-slot:head>
+
 
         {{-- =================================================
              NO
@@ -37,19 +39,19 @@
 
 
         {{-- =================================================
-             STATUS
+             NAMA USER
         ================================================== --}}
 
         <th
-            class="fw-semibold text-center"
+            class="fw-semibold"
             style="
-                min-width: 120px;
+                min-width: 160px;
                 color: #5f6875;
                 font-size: 13px;
                 white-space: nowrap;
             "
         >
-            Status
+            Nama User
         </th>
 
 
@@ -88,53 +90,36 @@
 
 
         {{-- =================================================
-             LOKASI
+             TANGGAL
         ================================================== --}}
 
         <th
             class="fw-semibold"
             style="
-                min-width: 220px;
+                min-width: 180px;
                 color: #5f6875;
                 font-size: 13px;
                 white-space: nowrap;
             "
         >
-            Koordinat
+            Tanggal
         </th>
 
 
         {{-- =================================================
-             KETERANGAN
+             STATUS
         ================================================== --}}
 
         <th
-            class="fw-semibold"
+            class="fw-semibold text-center"
             style="
-                min-width: 220px;
+                min-width: 130px;
                 color: #5f6875;
                 font-size: 13px;
                 white-space: nowrap;
             "
         >
-            Keterangan
-        </th>
-
-
-        {{-- =================================================
-             WAKTU
-        ================================================== --}}
-
-        <th
-            class="fw-semibold"
-            style="
-                min-width: 160px;
-                color: #5f6875;
-                font-size: 13px;
-                white-space: nowrap;
-            "
-        >
-            Waktu
+            Status
         </th>
 
 
@@ -154,6 +139,7 @@
             Aksi
         </th>
 
+
     </x-slot:head>
 
 
@@ -163,9 +149,11 @@
 
     <x-slot:body>
 
+
         @forelse ($laporans as $index => $laporan)
 
             <tr>
+
 
                 {{-- =================================================
                      CHECKBOX
@@ -181,14 +169,11 @@
                     <input
                         type="checkbox"
                         value="{{ $laporan->id }}"
-                        class="form-check-input laporan-checkbox m-0"
-                        @disabled($laporan->status === 'terverifikasi')
+                        class="form-check-input kelola-laporan-checkbox m-0"
                         style="
                             width: 16px;
                             height: 16px;
-                            cursor: {{ $laporan->status === 'terverifikasi'
-                                ? 'not-allowed'
-                                : 'pointer' }};
+                            cursor: pointer;
                         "
                     >
 
@@ -212,60 +197,22 @@
 
 
                 {{-- =================================================
-                     STATUS
+                     NAMA USER
                 ================================================== --}}
 
-                <td class="text-center">
+                <td>
 
-                    @if ($laporan->status === 'terverifikasi')
+                    <div
+                        class="fw-semibold"
+                        style="
+                            color: #252a31;
+                            font-size: 13px;
+                        "
+                    >
 
-                        <span
-                            class="d-inline-flex align-items-center"
-                            style="
-                                min-height: 26px;
-                                padding: 4px 9px;
-                                border-radius: 7px;
-                                background: #eaf8ef;
-                                color: #218838;
-                                font-size: 11px;
-                                font-weight: 600;
-                                white-space: nowrap;
-                            "
-                        >
+                        {{ $laporan->user->username ?? '-' }}
 
-                            <i
-                                class="bi bi-check-circle me-1"
-                            ></i>
-
-                            Terverifikasi
-
-                        </span>
-
-                    @else
-
-                        <span
-                            class="d-inline-flex align-items-center"
-                            style="
-                                min-height: 26px;
-                                padding: 4px 9px;
-                                border-radius: 7px;
-                                background: #fff7e6;
-                                color: #b7791f;
-                                font-size: 11px;
-                                font-weight: 600;
-                                white-space: nowrap;
-                            "
-                        >
-
-                            <i
-                                class="bi bi-clock me-1"
-                            ></i>
-
-                            Menunggu
-
-                        </span>
-
-                    @endif
+                    </div>
 
                 </td>
 
@@ -283,7 +230,9 @@
                             font-size: 13px;
                         "
                     >
+
                         {{ $laporan->ruangan->nama_ruangan ?? '-' }}
+
                     </div>
 
 
@@ -294,7 +243,9 @@
                             font-size: 11px;
                         "
                     >
+
                         {{ $laporan->ruangan->kode_ruangan ?? '-' }}
+
                     </div>
 
                 </td>
@@ -310,7 +261,7 @@
 
                         <img
                             src="{{ asset('storage/' . $laporan->foto_kondisi) }}"
-                            alt="Foto kondisi ruangan"
+                            alt="Foto kondisi laporan"
                             style="
                                 width: 70px;
                                 height: 55px;
@@ -337,81 +288,7 @@
 
 
                 {{-- =================================================
-                     KOORDINAT
-                ================================================== --}}
-
-                <td>
-
-                    <div
-                        style="
-                            color: #5f6875;
-                            font-size: 12px;
-                        "
-                    >
-
-                        <strong>
-                            Lat:
-                        </strong>
-
-                        {{ $laporan->latitude }}
-
-                    </div>
-
-
-                    <div
-                        class="mt-1"
-                        style="
-                            color: #5f6875;
-                            font-size: 12px;
-                        "
-                    >
-
-                        <strong>
-                            Long:
-                        </strong>
-
-                        {{ $laporan->longitude }}
-
-                    </div>
-
-                </td>
-
-
-                {{-- =================================================
-                     KETERANGAN
-                ================================================== --}}
-
-                <td>
-
-                    @if ($laporan->keterangan)
-
-                        <span
-                            style="
-                                color: #5f6875;
-                                font-size: 12px;
-                            "
-                        >
-                            {{ $laporan->keterangan }}
-                        </span>
-
-                    @else
-
-                        <span
-                            style="
-                                color: #98a1b2;
-                                font-size: 12px;
-                            "
-                        >
-                            Tidak ada keterangan
-                        </span>
-
-                    @endif
-
-                </td>
-
-
-                {{-- =================================================
-                     WAKTU
+                     TANGGAL
                 ================================================== --}}
 
                 <td>
@@ -423,7 +300,13 @@
                             white-space: nowrap;
                         "
                     >
-                        {{ $laporan->created_at->format('d M Y') }}
+
+                        <strong>
+                            Dibuat:
+                        </strong>
+
+                        {{ $laporan->created_at->format('d M Y H:i') }}
+
                     </div>
 
 
@@ -435,9 +318,84 @@
                             white-space: nowrap;
                         "
                     >
-                        {{ $laporan->created_at->format('H:i') }}
+
+                        <strong>
+                            Diubah:
+                        </strong>
+
+                        {{ $laporan->updated_at->format('d M Y H:i') }}
+
                     </div>
 
+                </td>
+
+
+                {{-- =================================================
+                     STATUS
+                ================================================== --}}
+                            
+                <td class="text-center">
+                
+                    @if ($laporan->status === 'menunggu')
+                
+                        <button
+                            type="button"
+                            class="
+                                btn
+                                btn-sm
+                                d-inline-flex
+                                align-items-center
+                                justify-content-center
+                                kelola-laporan-action-approve
+                            "
+                            data-bs-toggle="modal"
+                            data-bs-target="#approveLaporanModal"
+                            data-laporan-id="{{ $laporan->id }}"
+                            title="Approve laporan"
+                            aria-label="Approve laporan"
+                            style="
+                                min-width: 82px;
+                                min-height: 32px;
+                                padding: 6px 12px;
+                                border: 0;
+                                border-radius: 8px;
+                                background: #3478f6;
+                                color: #ffffff;
+                                font-size: 12px;
+                                font-weight: 600;
+                            "
+                        >
+                
+                            <i class="bi bi-check-circle me-1"></i>
+                
+                            Approve
+                
+                        </button>
+                    
+                    @else
+                    
+                        <span
+                            class="d-inline-flex align-items-center"
+                            style="
+                                min-height: 28px;
+                                padding: 5px 10px;
+                                border-radius: 7px;
+                                background: #eaf8ef;
+                                color: #218838;
+                                font-size: 11px;
+                                font-weight: 600;
+                                white-space: nowrap;
+                            "
+                        >
+                    
+                            <i class="bi bi-check-circle me-1"></i>
+                    
+                            Terverifikasi
+                    
+                        </span>
+                    
+                    @endif
+                    
                 </td>
 
 
@@ -451,6 +409,7 @@
                         class="d-inline-flex align-items-center gap-2"
                     >
 
+
                         {{-- =================================================
                              VIEW
                         ================================================== --}}
@@ -463,10 +422,10 @@
                                 d-inline-flex
                                 align-items-center
                                 justify-content-center
-                                laporan-action-view
+                                kelola-laporan-action-view
                             "
                             data-bs-toggle="modal"
-                            data-bs-target="#viewLaporanModal"
+                            data-bs-target="#viewKelolaLaporanModal"
                             data-laporan-id="{{ $laporan->id }}"
                             title="Lihat laporan"
                             aria-label="Lihat laporan"
@@ -481,7 +440,9 @@
                                 font-size: 14px;
                             "
                         >
+
                             <i class="bi bi-eye"></i>
+
                         </button>
 
 
@@ -497,14 +458,13 @@
                                 d-inline-flex
                                 align-items-center
                                 justify-content-center
-                                laporan-action-edit
+                                kelola-laporan-action-edit
                             "
                             data-bs-toggle="modal"
-                            data-bs-target="#editLaporanModal"
+                            data-bs-target="#editKelolaLaporanModal"
                             data-laporan-id="{{ $laporan->id }}"
                             title="Edit laporan"
                             aria-label="Edit laporan"
-                            @disabled($laporan->status === 'terverifikasi')
                             style="
                                 width: 34px;
                                 height: 34px;
@@ -514,10 +474,6 @@
                                 background: #ffffff;
                                 color: #f5a623;
                                 font-size: 14px;
-                                opacity: {{ $laporan->status === 'terverifikasi' ? '0.45' : '1' }};
-                                cursor: {{ $laporan->status === 'terverifikasi'
-                                    ? 'not-allowed'
-                                    : 'pointer' }};
                             "
                         >
 
@@ -538,14 +494,13 @@
                                 d-inline-flex
                                 align-items-center
                                 justify-content-center
-                                laporan-action-delete
+                                kelola-laporan-action-delete
                             "
                             data-bs-toggle="modal"
-                            data-bs-target="#deleteLaporanModal"
+                            data-bs-target="#deleteKelolaLaporanModal"
                             data-laporan-id="{{ $laporan->id }}"
                             title="Hapus laporan"
                             aria-label="Hapus laporan"
-                            @disabled($laporan->status === 'terverifikasi')
                             style="
                                 width: 34px;
                                 height: 34px;
@@ -555,10 +510,6 @@
                                 background: #ffffff;
                                 color: #dc3545;
                                 font-size: 14px;
-                                opacity: {{ $laporan->status === 'terverifikasi' ? '0.45' : '1' }};
-                                cursor: {{ $laporan->status === 'terverifikasi'
-                                    ? 'not-allowed'
-                                    : 'pointer' }};
                             "
                         >
 
@@ -566,18 +517,22 @@
 
                         </button>
 
+
                     </div>
 
                 </td>
 
+
             </tr>
 
+
         @empty
+
 
             <tr>
 
                 <td
-                    colspan="9"
+                    colspan="8"
                     class="text-center"
                     style="
                         padding: 40px 20px;
@@ -592,8 +547,11 @@
 
             </tr>
 
+
         @endforelse
 
+
     </x-slot:body>
+
 
 </x-admin.table>

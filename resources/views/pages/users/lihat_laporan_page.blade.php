@@ -99,6 +99,36 @@
                 'components.user.lihat_laporan_page.laporan_table'
             )
 
+            {{-- MODAL VIEW --}}
+
+            @include(
+                'components.user.lihat_laporan_page.view_lihatLaporan_modal'
+            )
+
+
+            {{-- MODAL EDIT --}}
+
+            @include(
+                'components.user.lihat_laporan_page.edit_lihatLaporan_modal'
+            )
+
+
+            {{-- MODAL DELETE --}}
+
+            @include(
+                'components.user.lihat_laporan_page.delete_lihatLaporan_modal'
+            )
+
+            @include(
+                'components.user.lihat_laporan_page.laporan_modal_script'
+            )
+
+            {{-- MODAL BULK DELETE --}}
+
+            @include(
+                'components.user.lihat_laporan_page.delete_selected_laporan_modal'
+            )
+
         </div>
 
     </div>

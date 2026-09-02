@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\MasterRuanganController;
 use App\Http\Controllers\User\LaporanController;
 use App\Http\Controllers\User\LaporanJanitorController;
+use App\Http\Controllers\Admin\LaporanControllers;
 
 
 /*
@@ -66,13 +67,56 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get(
-        '/user/lihat_laporan',
+    '/user/lihat_laporan',
         [
             LaporanController::class,
             'index'
         ]
     )->name(
         'user.lihat-laporan'
+    );
+
+
+    Route::get(
+        '/user/laporan/detail/{id}',
+        [
+            LaporanController::class,
+            'show'
+        ]
+    )->name(
+        'user.laporan.show'
+    );
+
+
+    Route::put(
+        '/user/laporan/{id}',
+        [
+            LaporanController::class,
+            'update'
+        ]
+    )->name(
+        'user.laporan.update'
+    );
+
+    Route::delete(
+        '/user/laporan/bulk-destroy',
+        [
+            LaporanController::class,
+            'bulkDestroy'
+        ]
+    )->name(
+        'user.laporan.bulk-destroy'
+    );
+
+
+    Route::delete(
+        '/user/laporan/{id}',
+        [
+            LaporanController::class,
+            'destroy'
+        ]
+    )->name(
+        'user.laporan.destroy'
     );
 
     /*
@@ -129,6 +173,32 @@ Route::middleware('auth')->group(function () {
         );
 
     })->name('admin.dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Kelola Laporan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/admin/kelola_laporan',
+        [
+            LaporanControllers::class,
+            'index'
+        ]
+    )->name(
+        'admin.kelola-laporan'
+    );
+
+    Route::get(
+        '/admin/kelola_laporan/{laporan}/approval-data',
+        [
+            LaporanControllers::class,
+            'approvalData'
+        ]
+    )->name(
+        'admin.kelola-laporan.approval-data'
+    );
 
     /*
     |--------------------------------------------------------------------------

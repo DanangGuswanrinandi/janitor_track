@@ -119,10 +119,10 @@
                 ],
 
                 [
-                    'label' => 'Laporan',
+                    'label' => 'Kelola Laporan',
                     'icon' => 'bi-clipboard2-data',
-                    'route' => '#',
-                    'active' => null,
+                    'route' => 'admin.kelola-laporan',
+                    'active' => 'admin.kelola-laporan',
                 ],
 
                 [
