@@ -413,6 +413,196 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+        /*
+    |--------------------------------------------------------------------------
+    | APPROVE LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
+    approveButton.addEventListener(
+        'click',
+        async function () {
+
+            const laporanId =
+                this.dataset.laporanId;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CEK ID
+            |--------------------------------------------------------------------------
+            */
+
+            if (!laporanId) {
+
+                console.error(
+                    'ID laporan tidak ditemukan.'
+                );
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | KONFIRMASI
+            |--------------------------------------------------------------------------
+            */
+
+            const confirmed =
+                confirm(
+                    'Apakah Anda yakin ingin approve laporan ini?'
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | DISABLE BUTTON
+            |--------------------------------------------------------------------------
+            */
+
+            approveButton.disabled = true;
+
+            approveButton.innerHTML = `
+                <span
+                    class="spinner-border spinner-border-sm me-1"
+                    role="status"
+                    aria-hidden="true"
+                ></span>
+
+                Memproses...
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/admin/kelola_laporan/${laporanId}/approve`,
+                        {
+                            method: 'PUT',
+
+                            headers: {
+
+                                'Accept':
+                                    'application/json',
+
+                                'X-Requested-With':
+                                    'XMLHttpRequest',
+
+                                'X-CSRF-TOKEN':
+                                    document
+                                        .querySelector(
+                                            'meta[name="csrf-token"]'
+                                        )
+                                        .getAttribute('content'),
+
+                            },
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | RESPONSE ERROR
+                |--------------------------------------------------------------------------
+                */
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ??
+                        'Gagal melakukan approve laporan.'
+                    );
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | BERHASIL
+                |--------------------------------------------------------------------------
+                */
+
+                alert(
+                    data.message ??
+                    'Laporan berhasil diverifikasi.'
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | TUTUP MODAL
+                |--------------------------------------------------------------------------
+                */
+
+                const modal =
+                    bootstrap.Modal.getInstance(
+                        modalElement
+                    );
+
+
+                if (modal) {
+
+                    modal.hide();
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | REFRESH HALAMAN
+                |--------------------------------------------------------------------------
+                */
+
+                window.location.reload();
+
+
+            } catch (error) {
+
+                console.error(
+                    'Approve Laporan Error:',
+                    error
+                );
+
+
+                alert(
+                    error.message ??
+                    'Terjadi kesalahan saat melakukan approve laporan.'
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | KEMBALIKAN BUTTON
+                |--------------------------------------------------------------------------
+                */
+
+                approveButton.disabled = false;
+
+                approveButton.innerHTML = `
+                    <i class="bi bi-check-circle me-1"></i>
+                    Approve Laporan
+                `;
+
+            }
+
+        }
+    );
+
 });
 
 </script>

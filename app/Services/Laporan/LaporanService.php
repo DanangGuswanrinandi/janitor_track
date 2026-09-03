@@ -598,4 +598,215 @@ class LaporanService
             $earthRadius * $c;
 
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPROVE LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
+    public function approveReport(
+        int $laporanId
+    ): LaporanJanitor {
+
+        $laporan = LaporanJanitor::findOrFail(
+            $laporanId
+        );
+
+        $laporan->status = 'terverifikasi';
+
+        $laporan->save();
+
+        return $laporan->fresh([
+            'ruangan',
+            'user',
+        ]);
+    }
+
+    public function getReportDetail(
+    int $laporanId
+    ): array {
+
+        $laporan =
+            LaporanJanitor::with([
+                'ruangan',
+                'user',
+            ])->findOrFail(
+                $laporanId
+            );
+
+
+        return [
+
+            'id' =>
+                $laporan->id,
+
+            'user' =>
+                $laporan->user->username ?? '-',
+
+            'ruangan' =>
+                $laporan->ruangan->nama_ruangan ?? '-',
+
+            'kode_ruangan' =>
+                $laporan->ruangan->kode_ruangan ?? '-',
+
+            'foto' =>
+                $laporan->foto_kondisi,
+
+            'latitude' =>
+                $laporan->latitude,
+
+            'longitude' =>
+                $laporan->longitude,
+
+            'keterangan' =>
+                $laporan->keterangan,
+
+            'status' =>
+                $laporan->status,
+
+            'created_at' =>
+                $laporan->created_at
+                    ->format('d M Y H:i'),
+
+            'updated_at' =>
+                $laporan->updated_at
+                    ->format('d M Y H:i'),
+
+        ];
+
+    }
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE LAPORAN ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+    public function updateAdminReport(
+        Request $request,
+        int $laporanId
+    ): LaporanJanitor {
+
+        $laporan = LaporanJanitor::findOrFail($laporanId);
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI
+        |--------------------------------------------------------------------------
+        */
+
+        $validated = $request->validate([
+
+            'foto' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:5120',
+            ],
+
+            'latitude' => [
+                'required',
+                'numeric',
+                'between:-90,90',
+            ],
+
+            'longitude' => [
+                'required',
+                'numeric',
+                'between:-180,180',
+            ],
+
+            'keterangan' => [
+                'nullable',
+                'string',
+                'max:1000',
+            ],
+
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE FOTO
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->hasFile('foto')) {
+
+            if (
+                $laporan->foto_kondisi &&
+                Storage::disk('public')
+                    ->exists($laporan->foto_kondisi)
+            ) {
+
+                Storage::disk('public')
+                    ->delete($laporan->foto_kondisi);
+            }
+
+            $laporan->foto_kondisi =
+                $request
+                    ->file('foto')
+                    ->store(
+                        'laporan_janitor',
+                        'public'
+                    );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE DATA
+        |--------------------------------------------------------------------------
+        */
+
+        $laporan->latitude =
+            $validated['latitude'];
+
+        $laporan->longitude =
+            $validated['longitude'];
+
+        $laporan->keterangan =
+            $validated['keterangan'] ?? null;
+
+        $laporan->save();
+
+        return $laporan->fresh([
+            'ruangan',
+            'user',
+        ]);
+    }
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE LAPORAN ADMIN
+    |--------------------------------------------------------------------------
+    */
+    
+    public function deleteAdminReport(
+        int $laporanId
+    ): void {
+    
+        $laporan = LaporanJanitor::findOrFail($laporanId);
+    
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS FOTO
+        |--------------------------------------------------------------------------
+        */
+    
+        if (
+            $laporan->foto_kondisi &&
+            Storage::disk('public')
+                ->exists($laporan->foto_kondisi)
+        ) {
+    
+            Storage::disk('public')
+                ->delete($laporan->foto_kondisi);
+        }
+    
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS LAPORAN
+        |--------------------------------------------------------------------------
+        */
+    
+        $laporan->delete();
+    }
 }

@@ -190,6 +190,30 @@ Route::middleware('auth')->group(function () {
         'admin.kelola-laporan'
     );
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | View Laporan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/admin/kelola_laporan/{laporan}',
+        [
+            LaporanControllers::class,
+            'show'
+        ]
+    )->name(
+        'admin.kelola-laporan.show'
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Data Approve Laporan
+    |--------------------------------------------------------------------------
+    */
+
     Route::get(
         '/admin/kelola_laporan/{laporan}/approval-data',
         [
@@ -198,6 +222,57 @@ Route::middleware('auth')->group(function () {
         ]
     )->name(
         'admin.kelola-laporan.approval-data'
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Approve Laporan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::put(
+        '/admin/kelola_laporan/{laporan}/approve',
+        [
+            LaporanControllers::class,
+            'approve'
+        ]
+    )->name(
+        'admin.kelola-laporan.approve'
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Update Laporan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::put(
+        '/admin/kelola_laporan/{laporan}',
+        [
+            LaporanControllers::class,
+            'update'
+        ]
+    )->name(
+        'admin.kelola-laporan.update'
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Delete Laporan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::delete(
+        '/admin/kelola_laporan/{laporan}',
+        [
+            LaporanControllers::class,
+            'destroy'
+        ]
+    )->name(
+        'admin.kelola-laporan.destroy'
     );
 
     /*
