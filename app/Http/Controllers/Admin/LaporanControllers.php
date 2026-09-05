@@ -47,6 +47,24 @@ class LaporanControllers extends Controller
 
     /*
     |--------------------------------------------------------------------------
+    | HALAMAN VERIFIKASI LAPORAN
+    |--------------------------------------------------------------------------
+    */
+    
+    public function verifikasi()
+    {
+        $laporans =
+            $this->laporanService
+                ->getPendingReports();
+    
+        return view(
+            'pages.admin.verifikasi_laporan_page',
+            compact('laporans')
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | DATA APPROVE LAPORAN
     |--------------------------------------------------------------------------
     */

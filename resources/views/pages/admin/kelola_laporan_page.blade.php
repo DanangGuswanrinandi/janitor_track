@@ -11,6 +11,34 @@
     <div class="w-100">
 
         {{-- =====================================================
+             PAGE HEADER
+        ====================================================== --}}
+
+        <div class="mb-4">
+
+            <h2
+                class="m-0 fw-bold"
+                style="
+                    color: #20252b;
+                    font-size: 24px;
+                "
+            >
+                Kelola Laporan
+            </h2>
+
+            <p
+                class="mt-1 mb-0"
+                style="
+                    color: #98a1b2;
+                    font-size: 13px;
+                "
+            >
+                Kelola laporan kebersihan ruangan yang telah dikirim oleh pengguna.
+            </p>
+
+        </div>
+
+        {{-- =====================================================
              SUCCESS ALERT
         ====================================================== --}}
 
@@ -25,15 +53,15 @@
             "
         >
 
-            <h2
-                class="m-0 fw-bold mb-3"
+            <h3
+                class="m-0 fw-semibold mb-3"
                 style="
-                    color: #20252b;
-                    font-size: 24px;
+                    color: #252a31;
+                    font-size: 17px;
                 "
             >
                 Kelola Laporan
-            </h2>
+            </h3>
 
             {{-- =====================================================
                  FILTER LAPORAN

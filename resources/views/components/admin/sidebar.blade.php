@@ -126,10 +126,10 @@
                 ],
 
                 [
-                    'label' => 'Janitor',
-                    'icon' => 'bi-person-badge',
-                    'route' => '#',
-                    'active' => null,
+                    'label' => 'Verifikasi Laporan',
+                    'icon' => 'bi bi-clipboard2-check',
+                    'route' => 'admin.verifikasi_laporan',
+                    'active' => 'admin.verifikasi_laporan',
                 ],
 
                 [

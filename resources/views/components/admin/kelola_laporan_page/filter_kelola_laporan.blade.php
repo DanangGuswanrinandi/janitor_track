@@ -13,7 +13,7 @@
         style="
             border: 1px solid #edf0f5;
             border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+
         "
     >
 

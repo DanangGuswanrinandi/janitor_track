@@ -413,134 +413,134 @@ class LaporanService
     | MENGAMBIL SELURUH LAPORAN UNTUK ADMIN
     |--------------------------------------------------------------------------
     */
-    
+
     public function getAllReports(
         Request $request
     ) {
-    
+
         $query =
             LaporanJanitor::query()
                 ->with([
                     'ruangan',
                     'user',
                 ]);
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | FILTER NAMA USER
         |--------------------------------------------------------------------------
         */
-    
+
         if ($request->filled('user_id')) {
-    
+
             $query->where(
                 'user_id',
                 $request->user_id
             );
-    
+
         }
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | FILTER NAMA RUANGAN
         |--------------------------------------------------------------------------
         */
-    
+
         if ($request->filled('ruangan_id')) {
-    
+
             $query->where(
                 'ruangan_id',
                 $request->ruangan_id
             );
-    
+
         }
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | FILTER BULAN
         |--------------------------------------------------------------------------
         */
-    
+
         if ($request->filled('bulan')) {
-    
+
             $query->whereMonth(
                 'created_at',
                 $request->bulan
             );
-    
+
         }
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | FILTER TAHUN
         |--------------------------------------------------------------------------
         */
-    
+
         if ($request->filled('tahun')) {
-    
+
             $query->whereYear(
                 'created_at',
                 $request->tahun
             );
-    
+
         }
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | FILTER TANGGAL
         |--------------------------------------------------------------------------
         */
-    
+
         if ($request->filled('tanggal')) {
-    
+
             $query->whereDate(
                 'created_at',
                 $request->tanggal
             );
-    
+
         }
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | FILTER STATUS
         |--------------------------------------------------------------------------
         */
-    
+
         if ($request->filled('status')) {
-    
+
             $query->where(
                 'status',
                 $request->status
             );
-    
+
         }
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | DATA LAPORAN
         |--------------------------------------------------------------------------
         */
-    
+
         $laporans =
             $query
                 ->latest()
                 ->paginate(20)
                 ->withQueryString();
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | DATA USER UNTUK FILTER
         |--------------------------------------------------------------------------
         */
-    
+
         $users =
             \App\Models\User::query()
                 ->orderBy('username')
@@ -548,14 +548,14 @@ class LaporanService
                     'id',
                     'username',
                 ]);
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | DATA RUANGAN UNTUK FILTER
         |--------------------------------------------------------------------------
         */
-    
+
         $ruangans =
             MasterRuangan::query()
                 ->orderBy('nama_ruangan')
@@ -563,14 +563,14 @@ class LaporanService
                     'id',
                     'nama_ruangan',
                 ]);
-    
-    
+
+
         /*
         |--------------------------------------------------------------------------
         | DATA TAHUN
         |--------------------------------------------------------------------------
         */
-    
+
         $years =
             LaporanJanitor::query()
                 ->selectRaw(
@@ -579,15 +579,36 @@ class LaporanService
                 ->distinct()
                 ->orderByDesc('tahun')
                 ->pluck('tahun');
-    
-    
+
+
         return compact(
             'laporans',
             'users',
             'ruangans',
             'years'
         );
-    
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | MENGAMBIL LAPORAN MENUNGGU UNTUK VERIFIKASI
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPendingReports()
+    {
+        return LaporanJanitor::query()
+            ->with([
+                'ruangan',
+                'user',
+            ])
+            ->where(
+                'status',
+                'menunggu'
+            )
+            ->latest()
+            ->paginate(20);
     }
 
     /*

@@ -4,7 +4,7 @@
 
 @props([
     'items',
-    'storageKey',
+    'storageKey' => null,
     'checkboxClass' => 'admin-table-checkbox',
     'selectAllId' => 'adminTableSelectAll',
     'deleteButtonId' => 'adminTableDeleteButton',
@@ -12,6 +12,7 @@
     'emptyMessage' => 'Belum ada data.',
     'totalLabel' => 'data',
     'minWidth' => '760px',
+    'showSelection' => true,
 ])
 
 
@@ -45,33 +46,37 @@
 
                 <tr>
 
-                    {{-- =================================================
-                         CHECKBOX SELECT ALL
-                    ================================================== --}}
+                    @if ($showSelection)
 
-                    <th
-                        class="fw-semibold text-center"
-                        style="
-                            width: 50px;
-                            color: #5f6875;
-                            font-size: 13px;
-                            white-space: nowrap;
-                        "
-                    >
+                        {{-- =================================================
+                             CHECKBOX SELECT ALL
+                        ================================================== --}}
 
-                        <input
-                            type="checkbox"
-                            id="{{ $selectAllId }}"
-                            class="form-check-input m-0"
+                        <th
+                            class="fw-semibold text-center"
                             style="
-                                width: 16px;
-                                height: 16px;
-                                cursor: pointer;
+                                width: 50px;
+                                color: #5f6875;
+                                font-size: 13px;
+                                white-space: nowrap;
                             "
-                            aria-label="Pilih semua"
                         >
 
-                    </th>
+                            <input
+                                type="checkbox"
+                                id="{{ $selectAllId }}"
+                                class="form-check-input m-0"
+                                style="
+                                    width: 16px;
+                                    height: 16px;
+                                    cursor: pointer;
+                                "
+                                aria-label="Pilih semua"
+                            >
+
+                        </th>
+
+                    @endif
 
 
                     {{-- =================================================
@@ -308,65 +313,57 @@
     @endif
 
 
-    {{-- =========================================================
-         BULK DELETE BUTTON
-    ========================================================== --}}
+    @if ($showSelection)
 
-    <div
-        class="d-flex align-items-center justify-content-end mt-3"
-    >
-
-        <button
-            type="button"
-            id="{{ $deleteButtonId }}"
-            class="
-                btn
-                fw-semibold
-                d-inline-flex
-                align-items-center
-                gap-2
-                admin-table-delete-selected
-            "
-
-            @if ($deleteModalId)
-
-                data-bs-toggle="modal"
-                data-bs-target="#{{ $deleteModalId }}"
-
-            @endif
-
-            disabled
-
-            style="
-                min-height: 40px;
-                padding: 8px 14px;
-                border: 1px solid #f1d9dc;
-                border-radius: 9px;
-                background: #ffffff;
-                color: #dc3545;
-                font-size: 13px;
-                opacity: 0.55;
-                cursor: not-allowed;
-            "
+        {{-- =================================================
+             BULK DELETE BUTTON
+        ================================================== --}}
+        
+        <div
+            class="d-flex align-items-center justify-content-end mt-3"
         >
-
-            <i class="bi bi-trash"></i>
-
-            <span>
-                Hapus Pilihan
-            </span>
-
-        </button>
-
+        
+            <button
+                type="button"
+                id="{{ $deleteButtonId }}"
+                class="btn fw-semibold d-inline-flex align-items-center gap-2 admin-table-delete-selected"
+                @if ($deleteModalId)
+                    data-bs-toggle="modal"
+                    data-bs-target="#{{ $deleteModalId }}"
+                @endif
+                disabled
+                style="
+                    min-height: 40px;
+                    padding: 8px 14px;
+                    border: 1px solid #f1d9dc;
+                    border-radius: 9px;
+                    background: #ffffff;
+                    color: #dc3545;
+                    font-size: 13px;
+                    opacity: 0.55;
+                    cursor: not-allowed;
+                "
+            >
+        
+                <i class="bi bi-trash"></i>
+        
+                <span>
+                    Hapus Pilihan
+                </span>
+            
+            </button>
+        
+        </div>
+    
+    @endif
+    
     </div>
-
-</div>
 
 
 {{-- =========================================================
      GENERIC BULK SELECT SCRIPT
 ========================================================== --}}
-
+@if ($showSelection)
 <script>
 
     document.addEventListener(
@@ -739,3 +736,5 @@
     );
 
 </script>
+
+@endif
