@@ -26,7 +26,7 @@
         >
 
             <h2
-                class="m-0 fw-bold"
+                class="m-0 fw-bold mb-3"
                 style="
                     color: #20252b;
                     font-size: 24px;
@@ -34,6 +34,16 @@
             >
                 Kelola Laporan
             </h2>
+
+            {{-- =====================================================
+                 FILTER LAPORAN
+            ====================================================== --}}
+
+            <x-admin.kelola_laporan_page.filter_kelola_laporan
+                :users="$users"
+                :ruangans="$ruangans"
+                :years="$years"
+            />
 
             {{-- =====================================================
              TABEL LAPORAN
@@ -101,80 +111,80 @@
             {{-- =========================================================
                  CLEAR SELECTED LAPORAN AFTER SUCCESS
             ========================================================= --}}
-                    
+
             @if (session('success'))
-                    
+
                 @push('scripts')
-                    
+
                     <script>
-                    
+
                         sessionStorage.removeItem(
                             'cleantrack_kelola_laporan'
                         );
-                    
+
                     </script>
-            
+
                 @endpush
-                
+
             @endif
-                
-                
+
+
             {{-- =========================================================
                  KELOLA LAPORAN SELECTION PAGE STATE
             ========================================================= --}}
-                
+
             @push('scripts')
-                
+
                 <script>
-                
+
                     document.addEventListener(
                         'DOMContentLoaded',
                         function () {
-                        
+
                             const storageKey =
                                 'cleantrack_kelola_laporan';
-                        
-                        
+
+
                             const previousPage =
                                 sessionStorage.getItem(
                                     'cleantrack_previous_page'
                                 );
-                        
-                        
+
+
                             /*
                             |--------------------------------------------------------------------------
                             | Jika sebelumnya berasal dari halaman selain kelola laporan
                             |--------------------------------------------------------------------------
                             */
-                        
+
                             if (
                                 previousPage &&
                                 previousPage !== 'kelola-laporan'
                             ) {
-                            
+
                                 sessionStorage.removeItem(
                                     storageKey
                                 );
-                            
+
                             }
-                        
-                        
+
+
                             /*
                             |--------------------------------------------------------------------------
                             | Tandai halaman saat ini
                             |--------------------------------------------------------------------------
                             */
-                        
+
                             sessionStorage.setItem(
                                 'cleantrack_previous_page',
                                 'kelola-laporan'
                             );
-                        
+
                         }
                     );
-                    
+
                 </script>
-            
+
             @endpush
 
 

@@ -408,15 +408,186 @@ class LaporanService
     |--------------------------------------------------------------------------
     */
 
-    public function getAllReports()
-    {
-        return LaporanJanitor::query()
-            ->with([
-                'ruangan',
-                'user',
-            ])
-            ->latest()
-            ->paginate(20);
+    /*
+    |--------------------------------------------------------------------------
+    | MENGAMBIL SELURUH LAPORAN UNTUK ADMIN
+    |--------------------------------------------------------------------------
+    */
+    
+    public function getAllReports(
+        Request $request
+    ) {
+    
+        $query =
+            LaporanJanitor::query()
+                ->with([
+                    'ruangan',
+                    'user',
+                ]);
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER NAMA USER
+        |--------------------------------------------------------------------------
+        */
+    
+        if ($request->filled('user_id')) {
+    
+            $query->where(
+                'user_id',
+                $request->user_id
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER NAMA RUANGAN
+        |--------------------------------------------------------------------------
+        */
+    
+        if ($request->filled('ruangan_id')) {
+    
+            $query->where(
+                'ruangan_id',
+                $request->ruangan_id
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER BULAN
+        |--------------------------------------------------------------------------
+        */
+    
+        if ($request->filled('bulan')) {
+    
+            $query->whereMonth(
+                'created_at',
+                $request->bulan
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TAHUN
+        |--------------------------------------------------------------------------
+        */
+    
+        if ($request->filled('tahun')) {
+    
+            $query->whereYear(
+                'created_at',
+                $request->tahun
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TANGGAL
+        |--------------------------------------------------------------------------
+        */
+    
+        if ($request->filled('tanggal')) {
+    
+            $query->whereDate(
+                'created_at',
+                $request->tanggal
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER STATUS
+        |--------------------------------------------------------------------------
+        */
+    
+        if ($request->filled('status')) {
+    
+            $query->where(
+                'status',
+                $request->status
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | DATA LAPORAN
+        |--------------------------------------------------------------------------
+        */
+    
+        $laporans =
+            $query
+                ->latest()
+                ->paginate(20)
+                ->withQueryString();
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | DATA USER UNTUK FILTER
+        |--------------------------------------------------------------------------
+        */
+    
+        $users =
+            \App\Models\User::query()
+                ->orderBy('username')
+                ->get([
+                    'id',
+                    'username',
+                ]);
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | DATA RUANGAN UNTUK FILTER
+        |--------------------------------------------------------------------------
+        */
+    
+        $ruangans =
+            MasterRuangan::query()
+                ->orderBy('nama_ruangan')
+                ->get([
+                    'id',
+                    'nama_ruangan',
+                ]);
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | DATA TAHUN
+        |--------------------------------------------------------------------------
+        */
+    
+        $years =
+            LaporanJanitor::query()
+                ->selectRaw(
+                    'YEAR(created_at) as tahun'
+                )
+                ->distinct()
+                ->orderByDesc('tahun')
+                ->pluck('tahun');
+    
+    
+        return compact(
+            'laporans',
+            'users',
+            'ruangans',
+            'years'
+        );
+    
     }
 
     /*
@@ -823,11 +994,11 @@ class LaporanService
     | BULK DELETE LAPORAN ADMIN
     |--------------------------------------------------------------------------
     */
-    
+
     public function deleteSelectedAdminReports(
         Request $request
     ): int {
-    
+
         $validated =
             $request->validate([
                 'laporan_ids' => [
@@ -835,14 +1006,14 @@ class LaporanService
                     'array',
                     'min:1',
                 ],
-    
+
                 'laporan_ids.*' => [
                     'integer',
                     'exists:laporan_janitor,id',
                 ],
             ]);
-    
-    
+
+
         $laporans =
             LaporanJanitor::query()
                 ->whereIn(
@@ -850,19 +1021,19 @@ class LaporanService
                     $validated['laporan_ids']
                 )
                 ->get();
-    
-    
+
+
         $deletedCount = 0;
-    
-    
+
+
         foreach ($laporans as $laporan) {
-    
+
             /*
             |--------------------------------------------------------------------------
             | HAPUS FOTO
             |--------------------------------------------------------------------------
             */
-    
+
             if (
                 $laporan->foto_kondisi &&
                 Storage::disk('public')
@@ -870,30 +1041,30 @@ class LaporanService
                         $laporan->foto_kondisi
                     )
             ) {
-    
+
                 Storage::disk('public')
                     ->delete(
                         $laporan->foto_kondisi
                     );
-    
+
             }
-    
-    
+
+
             /*
             |--------------------------------------------------------------------------
             | HAPUS LAPORAN
             |--------------------------------------------------------------------------
             */
-    
+
             $laporan->delete();
-    
-    
+
+
             $deletedCount++;
-    
+
         }
-    
-    
+
+
         return $deletedCount;
-    
+
     }
 }

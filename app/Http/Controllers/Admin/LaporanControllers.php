@@ -21,24 +21,28 @@ class LaporanControllers extends Controller
     ) {
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | HALAMAN KELOLA LAPORAN
     |--------------------------------------------------------------------------
     */
 
-    public function index()
-    {
-        $laporans =
+    public function index(
+        Request $request
+    ) {
+
+        $data =
             $this->laporanService
-                ->getAllReports();
+                ->getAllReports(
+                    $request
+                );
 
 
         return view(
             'pages.admin.kelola_laporan_page',
-            compact('laporans')
+            $data
         );
+
     }
 
     /*
