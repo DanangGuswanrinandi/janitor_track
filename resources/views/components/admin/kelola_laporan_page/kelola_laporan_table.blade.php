@@ -333,11 +333,11 @@
                 {{-- =================================================
                      STATUS
                 ================================================== --}}
-                            
+
                 <td class="text-center">
-                
+
                     @if ($laporan->status === 'menunggu')
-                
+
                         <button
                             type="button"
                             class="
@@ -365,15 +365,15 @@
                                 font-weight: 600;
                             "
                         >
-                
+
                             <i class="bi bi-check-circle me-1"></i>
-                
+
                             Approve
-                
+
                         </button>
-                    
+
                     @else
-                    
+
                         <span
                             class="d-inline-flex align-items-center"
                             style="
@@ -387,15 +387,15 @@
                                 white-space: nowrap;
                             "
                         >
-                    
+
                             <i class="bi bi-check-circle me-1"></i>
-                    
+
                             Terverifikasi
-                    
+
                         </span>
-                    
+
                     @endif
-                    
+
                 </td>
 
 

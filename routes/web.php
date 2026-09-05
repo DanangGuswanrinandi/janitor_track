@@ -241,6 +241,11 @@ Route::middleware('auth')->group(function () {
         'admin.kelola-laporan.approve'
     );
 
+    Route::delete(
+        '/admin/kelola_laporan/bulk-destroy',
+        [LaporanControllers::class, 'bulkDestroy']
+    )->name('admin.kelola-laporan.bulk-destroy');
+
 
     /*
     |--------------------------------------------------------------------------

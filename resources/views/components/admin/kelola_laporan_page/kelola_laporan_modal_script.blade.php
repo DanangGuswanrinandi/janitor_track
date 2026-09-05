@@ -269,6 +269,59 @@ document.addEventListener(
             );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | VIEW FOTO - SWEETALERT
+        |--------------------------------------------------------------------------
+        */
+
+        if (viewFoto) {
+
+            viewFoto.addEventListener(
+                'click',
+                function () {
+
+                    const imageUrl =
+                        this.src;
+
+                    if (!imageUrl) {
+                        return;
+                    }
+
+                    Swal.fire({
+
+                        imageUrl: imageUrl,
+
+                        imageAlt:
+                            'Foto laporan',
+
+                        showConfirmButton: false,
+
+                        showCloseButton: true,
+
+                        background: '#ffffff',
+
+                        width: 'auto',
+
+                        padding: '10px',
+
+                        customClass: {
+
+                            popup:
+                                'view-kelola-laporan-photo-popup',
+
+                            image:
+                                'view-kelola-laporan-photo-image'
+
+                        }
+
+                    });
+
+                }
+            );
+
+        }
+
 
         /*
         |--------------------------------------------------------------------------
@@ -315,6 +368,220 @@ document.addEventListener(
             document.getElementById(
                 'editKelolaLaporanKeterangan'
             );
+
+        const editStatus =
+            document.getElementById(
+                'editKelolaLaporanStatus'
+            );
+
+        const editMapElement =
+            document.getElementById(
+                'editKelolaLaporanMap'
+            );
+
+        let editMap = null;
+
+        let editMarker = null;
+
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT - MAP
+        |--------------------------------------------------------------------------
+        */
+
+        function initializeEditMap(
+            latitude,
+            longitude
+        ) {
+
+            if (!editMapElement) {
+                return;
+            }
+
+            if (
+                typeof L === 'undefined'
+            ) {
+
+                console.error(
+                    'Leaflet belum tersedia.'
+                );
+
+                return;
+            }
+
+
+            const lat =
+                parseFloat(latitude);
+
+            const lng =
+                parseFloat(longitude);
+
+
+            if (
+                Number.isNaN(lat) ||
+                Number.isNaN(lng)
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BUAT MAP
+            |--------------------------------------------------------------------------
+            */
+
+            if (!editMap) {
+
+                editMap =
+                    L.map(
+                        editMapElement
+                    ).setView(
+                        [
+                            lat,
+                            lng
+                        ],
+                        18
+                    );
+
+
+                L.tileLayer(
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    {
+                        maxZoom: 22,
+                        attribution: '&copy; OpenStreetMap'
+                    }
+                ).addTo(
+                    editMap
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | MARKER
+                |--------------------------------------------------------------------------
+                */
+
+                editMarker =
+                    L.marker(
+                        [
+                            lat,
+                            lng
+                        ],
+                        {
+                            draggable: true
+                        }
+                    ).addTo(
+                        editMap
+                    );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | MARKER DRAG
+                |--------------------------------------------------------------------------
+                */
+
+                editMarker.on(
+                    'dragend',
+                    function () {
+
+                        const position =
+                            editMarker.getLatLng();
+
+
+                        updateEditCoordinates(
+                            position.lat,
+                            position.lng
+                        );
+
+                    }
+                );
+
+            } else {
+
+                editMap.setView(
+                    [
+                        lat,
+                        lng
+                    ],
+                    18
+                );
+
+
+                editMarker.setLatLng(
+                    [
+                        lat,
+                        lng
+                    ]
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE INPUT
+            |--------------------------------------------------------------------------
+            */
+
+            updateEditCoordinates(
+                lat,
+                lng
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | FIX MAP SIZE
+            |--------------------------------------------------------------------------
+            */
+
+            setTimeout(
+                function () {
+
+                    if (editMap) {
+
+                        editMap.invalidateSize();
+
+                    }
+
+                },
+                200
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT - UPDATE COORDINATES
+        |--------------------------------------------------------------------------
+        */
+
+        function updateEditCoordinates(
+            latitude,
+            longitude
+        ) {
+
+            if (editLatitude) {
+
+                editLatitude.value =
+                    Number(latitude).toFixed(7);
+
+            }
+
+
+            if (editLongitude) {
+
+                editLongitude.value =
+                    Number(longitude).toFixed(7);
+
+            }
+
+        }
 
 
         /*
@@ -369,19 +636,47 @@ document.addEventListener(
                 }
 
                 if (editLatitude) {
+
                     editLatitude.value =
                         data.latitude ?? '';
+
                 }
+
 
                 if (editLongitude) {
+
                     editLongitude.value =
                         data.longitude ?? '';
+
                 }
 
+
+                if (editStatus) {
+
+                    editStatus.value =
+                        data.status ?? 'menunggu';
+
+                }
+
+
                 if (editKeterangan) {
+
                     editKeterangan.value =
                         data.keterangan ?? '';
+
                 }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | INITIALIZE MAP
+                |--------------------------------------------------------------------------
+                */
+
+                initializeEditMap(
+                    data.latitude,
+                    data.longitude
+                );
 
 
                 if (

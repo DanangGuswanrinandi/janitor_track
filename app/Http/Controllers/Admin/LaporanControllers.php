@@ -154,4 +154,27 @@ public function destroy(
             'Laporan berhasil dihapus.'
         );
 }
+/*
+|--------------------------------------------------------------------------
+| BULK DELETE LAPORAN
+|--------------------------------------------------------------------------
+*/
+
+public function bulkDestroy(
+    Request $request
+) {
+
+    $deletedCount =
+        $this->laporanService
+            ->deleteSelectedAdminReports(
+                $request
+            );
+
+    return redirect()
+        ->route('admin.kelola-laporan')
+        ->with(
+            'success',
+            $deletedCount . ' laporan berhasil dihapus.'
+        );
+}
 }

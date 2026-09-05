@@ -17,9 +17,12 @@
             >
 
                 @csrf
-
                 @method('PUT')
 
+
+                {{-- =====================================================
+                     HEADER
+                ====================================================== --}}
 
                 <div class="modal-header">
 
@@ -39,15 +42,17 @@
                 </div>
 
 
+                {{-- =====================================================
+                     BODY
+                ====================================================== --}}
+
                 <div class="modal-body">
 
                     {{-- USER --}}
 
                     <div class="mb-3">
 
-                        <label
-                            class="form-label fw-semibold"
-                        >
+                        <label class="form-label fw-semibold">
                             Nama User
                         </label>
 
@@ -65,9 +70,7 @@
 
                     <div class="mb-3">
 
-                        <label
-                            class="form-label fw-semibold"
-                        >
+                        <label class="form-label fw-semibold">
                             Ruangan
                         </label>
 
@@ -81,13 +84,44 @@
                     </div>
 
 
-                    {{-- FOTO LAMA --}}
+                    {{-- STATUS --}}
 
                     <div class="mb-3">
 
                         <label
+                            for="editKelolaLaporanStatus"
                             class="form-label fw-semibold"
                         >
+                            Status
+                        </label>
+
+                        <select
+                            name="status"
+                            id="editKelolaLaporanStatus"
+                            class="form-select"
+                            required
+                        >
+                            <option value="menunggu">
+                                Menunggu
+                            </option>
+
+                            <option value="terverifikasi">
+                                Terverifikasi
+                            </option>
+                        </select>
+
+                        <small class="text-muted">
+                            Admin dapat mengubah status laporan user.
+                        </small>
+
+                    </div>
+
+
+                    {{-- FOTO LAMA --}}
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
                             Foto Saat Ini
                         </label>
 
@@ -138,11 +172,45 @@
                     </div>
 
 
+                    {{-- =====================================================
+                         LOKASI
+                    ====================================================== --}}
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Lokasi Laporan
+                        </label>
+
+                        <div
+                            id="editKelolaLaporanMap"
+                            style="
+                                width: 100%;
+                                height: 320px;
+                                border-radius: 10px;
+                                border: 1px solid #dfe5ee;
+                                overflow: hidden;
+                                background: #f1f3f5;
+                            "
+                        ></div>
+
+                        <small
+                            class="text-muted d-block mt-2"
+                        >
+                            <i class="bi bi-info-circle me-1"></i>
+                            Geser marker pada peta untuk mengubah koordinat
+                            laporan.
+                        </small>
+
+                    </div>
+
+
                     {{-- LATITUDE --}}
 
                     <div class="mb-3">
 
                         <label
+                            for="editKelolaLaporanLatitude"
                             class="form-label fw-semibold"
                         >
                             Latitude
@@ -166,6 +234,7 @@
                     <div class="mb-3">
 
                         <label
+                            for="editKelolaLaporanLongitude"
                             class="form-label fw-semibold"
                         >
                             Longitude
@@ -207,6 +276,10 @@
 
                 </div>
 
+
+                {{-- =====================================================
+                     FOOTER
+                ====================================================== --}}
 
                 <div class="modal-footer">
 

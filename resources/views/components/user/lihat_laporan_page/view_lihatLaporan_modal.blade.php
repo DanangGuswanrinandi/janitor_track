@@ -94,6 +94,7 @@
                                 object-fit: cover;
                                 border-radius: 10px;
                                 border: 1px solid #dfe5ee;
+                                cursor: pointer;
                             "
                         >
 
@@ -197,3 +198,18 @@
     </div>
 
 </div>
+
+<style>
+.view-laporan-photo-popup {
+    max-width: 90vw !important;
+}
+
+.view-laporan-photo-image {
+    max-width: 85vw !important;
+    max-height: 80vh !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    border-radius: 8px;
+}
+</style>

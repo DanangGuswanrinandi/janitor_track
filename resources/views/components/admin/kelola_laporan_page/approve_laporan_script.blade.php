@@ -413,7 +413,61 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-        /*
+    /*
+    |--------------------------------------------------------------------------
+    | FOTO - SWEETALERT
+    |--------------------------------------------------------------------------
+    */
+
+    if (fotoElement) {
+
+        fotoElement.addEventListener(
+            'click',
+            function () {
+
+                const imageUrl =
+                    this.src;
+
+                if (!imageUrl) {
+                    return;
+                }
+
+                Swal.fire({
+
+                    imageUrl: imageUrl,
+
+                    imageAlt:
+                        'Foto laporan',
+
+                    showConfirmButton: false,
+
+                    showCloseButton: true,
+
+                    background: '#ffffff',
+
+                    width: 'auto',
+
+                    padding: '10px',
+
+                    customClass: {
+
+                        popup:
+                            'approve-laporan-photo-popup',
+
+                        image:
+                            'approve-laporan-photo-image'
+
+                    }
+
+                });
+
+            }
+        );
+
+    }
+
+
+    /*
     |--------------------------------------------------------------------------
     | APPROVE LAPORAN
     |--------------------------------------------------------------------------

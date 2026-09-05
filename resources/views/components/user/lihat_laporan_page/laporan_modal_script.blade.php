@@ -464,6 +464,77 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
 
+    /*
+    |--------------------------------------------------------------------------
+    | VIEW FOTO - SWEETALERT
+    |--------------------------------------------------------------------------
+    */
+
+    const viewFoto =
+        document.getElementById(
+            'viewLaporanFoto'
+        );
+
+
+    if (viewFoto) {
+
+        viewFoto.addEventListener(
+            'click',
+            function () {
+
+                const imageUrl =
+                    this.src;
+
+
+                if (
+                    !imageUrl
+                ) {
+
+                    return;
+
+                }
+
+
+                Swal.fire({
+
+                    imageUrl:
+                        imageUrl,
+
+                    imageAlt:
+                        'Foto kondisi ruangan',
+
+                    showConfirmButton:
+                        false,
+
+                    showCloseButton:
+                        true,
+
+                    background:
+                        '#ffffff',
+
+                    width:
+                        'auto',
+
+                    padding:
+                        '10px',
+
+                    customClass: {
+
+                        popup:
+                            'view-laporan-photo-popup',
+
+                        image:
+                            'view-laporan-photo-image'
+
+                    }
+
+                });
+
+            }
+        );
+
+    }
+
 
     /*
     |--------------------------------------------------------------------------

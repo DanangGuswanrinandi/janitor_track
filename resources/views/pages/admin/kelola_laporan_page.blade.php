@@ -10,6 +10,12 @@
 
     <div class="w-100">
 
+        {{-- =====================================================
+             SUCCESS ALERT
+        ====================================================== --}}
+
+        <x-alert.success />
+
         <div
             class="p-4 bg-white"
             style="
@@ -86,6 +92,90 @@
             ========================================================== --}}
 
             <x-admin.kelola_laporan_page.kelola_laporan_modal_script />
+
+            {{-- =========================================================
+                 MODAL DELETE SELECTED
+            ========================================================== --}}
+            <x-admin.kelola_laporan_page.delete_selected_kelola_laporan_modal />
+
+            {{-- =========================================================
+                 CLEAR SELECTED LAPORAN AFTER SUCCESS
+            ========================================================= --}}
+                    
+            @if (session('success'))
+                    
+                @push('scripts')
+                    
+                    <script>
+                    
+                        sessionStorage.removeItem(
+                            'cleantrack_kelola_laporan'
+                        );
+                    
+                    </script>
+            
+                @endpush
+                
+            @endif
+                
+                
+            {{-- =========================================================
+                 KELOLA LAPORAN SELECTION PAGE STATE
+            ========================================================= --}}
+                
+            @push('scripts')
+                
+                <script>
+                
+                    document.addEventListener(
+                        'DOMContentLoaded',
+                        function () {
+                        
+                            const storageKey =
+                                'cleantrack_kelola_laporan';
+                        
+                        
+                            const previousPage =
+                                sessionStorage.getItem(
+                                    'cleantrack_previous_page'
+                                );
+                        
+                        
+                            /*
+                            |--------------------------------------------------------------------------
+                            | Jika sebelumnya berasal dari halaman selain kelola laporan
+                            |--------------------------------------------------------------------------
+                            */
+                        
+                            if (
+                                previousPage &&
+                                previousPage !== 'kelola-laporan'
+                            ) {
+                            
+                                sessionStorage.removeItem(
+                                    storageKey
+                                );
+                            
+                            }
+                        
+                        
+                            /*
+                            |--------------------------------------------------------------------------
+                            | Tandai halaman saat ini
+                            |--------------------------------------------------------------------------
+                            */
+                        
+                            sessionStorage.setItem(
+                                'cleantrack_previous_page',
+                                'kelola-laporan'
+                            );
+                        
+                        }
+                    );
+                    
+                </script>
+            
+            @endpush
 
 
         </div>

@@ -26,7 +26,7 @@ class LaporanService
                 auth()->id()
             )
             ->latest()
-            ->paginate(20);
+            ->paginate(25);
     }
 
 
@@ -716,6 +716,11 @@ class LaporanService
                 'between:-180,180',
             ],
 
+            'status' => [
+                'required',
+                'in:menunggu,terverifikasi',
+            ],
+
             'keterangan' => [
                 'nullable',
                 'string',
@@ -763,6 +768,9 @@ class LaporanService
         $laporan->longitude =
             $validated['longitude'];
 
+        $laporan->status =
+            $validated['status'];
+
         $laporan->keterangan =
             $validated['keterangan'] ?? null;
 
@@ -778,35 +786,114 @@ class LaporanService
     | DELETE LAPORAN ADMIN
     |--------------------------------------------------------------------------
     */
-    
+
     public function deleteAdminReport(
         int $laporanId
     ): void {
-    
+
         $laporan = LaporanJanitor::findOrFail($laporanId);
-    
+
         /*
         |--------------------------------------------------------------------------
         | HAPUS FOTO
         |--------------------------------------------------------------------------
         */
-    
+
         if (
             $laporan->foto_kondisi &&
             Storage::disk('public')
                 ->exists($laporan->foto_kondisi)
         ) {
-    
+
             Storage::disk('public')
                 ->delete($laporan->foto_kondisi);
         }
-    
+
         /*
         |--------------------------------------------------------------------------
         | HAPUS LAPORAN
         |--------------------------------------------------------------------------
         */
-    
+
         $laporan->delete();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | BULK DELETE LAPORAN ADMIN
+    |--------------------------------------------------------------------------
+    */
+    
+    public function deleteSelectedAdminReports(
+        Request $request
+    ): int {
+    
+        $validated =
+            $request->validate([
+                'laporan_ids' => [
+                    'required',
+                    'array',
+                    'min:1',
+                ],
+    
+                'laporan_ids.*' => [
+                    'integer',
+                    'exists:laporan_janitor,id',
+                ],
+            ]);
+    
+    
+        $laporans =
+            LaporanJanitor::query()
+                ->whereIn(
+                    'id',
+                    $validated['laporan_ids']
+                )
+                ->get();
+    
+    
+        $deletedCount = 0;
+    
+    
+        foreach ($laporans as $laporan) {
+    
+            /*
+            |--------------------------------------------------------------------------
+            | HAPUS FOTO
+            |--------------------------------------------------------------------------
+            */
+    
+            if (
+                $laporan->foto_kondisi &&
+                Storage::disk('public')
+                    ->exists(
+                        $laporan->foto_kondisi
+                    )
+            ) {
+    
+                Storage::disk('public')
+                    ->delete(
+                        $laporan->foto_kondisi
+                    );
+    
+            }
+    
+    
+            /*
+            |--------------------------------------------------------------------------
+            | HAPUS LAPORAN
+            |--------------------------------------------------------------------------
+            */
+    
+            $laporan->delete();
+    
+    
+            $deletedCount++;
+    
+        }
+    
+    
+        return $deletedCount;
+    
     }
 }
